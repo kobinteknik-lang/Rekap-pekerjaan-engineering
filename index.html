@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Daily Report Hybrid V8 Full Clean System">
+  <meta name="robots" content="index, follow">
+  <title>DAILY REPORT HYBRID V8 FULL CLEAN</title>
+
+  <!-- External Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable"></script>
+
+  <style>
+    :root {
+      --bg: #eef2f7;
+      --card: #ffffff;
+      --text: #1f2937;
+      --line: #d6dde5;
+      --head: #243447;
+      --btn: #243447;
+      --btn2: #1d2b38;
+    }
+
+    body.dark {
+      --bg: #111827;
+      --card: #1f2937;
+      --text: #f9fafb;
+      --line: #374151;
+      --head: #0f172a;
+      --btn: #0f172a;
+      --btn2: #111827;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Segoe UI, system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .container {
+      max-width: 1700px;
+      margin: auto;
+    }
+
+    .card {
+      background: var(--card);
+      padding: 18px;
+      border-radius: 14px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+
+    .tools {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    input, select, textarea, button {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      font-size: 14px;
+      background: var(--card);
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    button {
+      background: linear-gradient(135deg, var(--btn), var(--btn2));
+      color: #fff;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    button:hover {
+      opacity: 0.92;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--head);
+      color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .thumb {
+      width: 70px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .badge {
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #fff;
+      background: #16a34a;
+      display: inline-block;
+    }
+
+    .red {
+      background: #dc2626;
+    }
+
+    .pasteBox {
+      border: 2px dashed #94a3b8;
+      padding: 14px;
+      border-radius: 10px;
+      text-align: center;
+      margin-top: 6px;
+      background: #f8fafc;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    body.dark .pasteBox {
+      background: #111827;
+      border-color: #475569;
+      color: #fff;
+    }
+
+    .pasteBox:focus {
+      outline: 2px solid #2563eb;
+      background-color: #e2e8f0;
+    }
+
+    body.dark .pasteBox:focus {
+      outline: 2px solid #60a5fa;
+      background-color: #1e293b;
+    }
+
+    #imgModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    #imgModal img {
+      max-width: 92%;
+      max-height: 92%;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- CARD HEADER & NAVIGATION -->
+  <div class="card">
+    <div class="tools">
+      <button type="button" onclick="showSection('input')">INPUT</button>
+      <button type="button" onclick="showSection('history')">HISTORY</button>
+      <button type="button" onclick="toggleDark()" aria-label="Toggle Dark Mode">🌙 DARK MODE</button>
+    </div>
+
+    <h2>DAILY REPORT HYBRID V8 FULL CLEAN</h2>
+    <div>
+      Auto WO • Google Sheets Sync • ImgBB Image Hosting • Edit • Delete • Ctrl+V Image • Export PDF
+    </div>
+  </div>
+
+  <!-- SECTION: INPUT FORM -->
+  <div id="input" class="card section active">
+
+    <div class="grid">
+      <div>
+        <label for="woNo">No WO</label>
+        <input type="text" id="woNo" readonly placeholder="Auto Generated">
+      </div>
+
+      <div>
+        <label for="woDate">Tanggal</label>
+        <input type="date" id="woDate">
+      </div>
+
+      <div>
+        <label for="machine">Mesin</label>
+        <input list="machineList" id="machine" placeholder="Pilih / Ketik Mesin">
+        <datalist id="machineList">
+          <option value="-"></option>
+          <option value="TIMBANGAN TANAH"></option>
+          <option value="BALLMILL"></option>
+          <option value="MOLEN GLAZE"></option>
+          <option value="SPRAY DYER"></option>
+          <option value="SILO"></option>
+          <option value="PRESS"></option>
+          <option value="HD"></option>
+          <option value="GLAZING LINE"></option>
+          <option value="DIGITAL PRINT"></option>
+          <option value="KOMPENSATOR"></option>
+          <option value="KILN"></option>
+          <option value="SQUARING"></option>
+          <option value="PACKING"></option>
+        </datalist>
+      </div>
+
+      <div>
+        <label for="line">Line</label>
+        <select id="line">
+          <option value="">- Pilih Line -</option>
+          <option value="-">- (Tanpa Line)</option>
+          <option value="1A">1A</option>
+          <option value="1B">1B</option>
+          <option value="1C">1C</option>
+          <option value="2A">2A</option>
+          <option value="2B">2B</option>
+          <option value="2C">2C</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid" style="margin-top: 10px;">
+      <div>
+        <label for="part">Part</label>
+        <input type="text" id="part" placeholder="Nama Part / Komponen">
+      </div>
+
+      <div>
+        <label for="pic">PIC</label>
+        <input type="text" id="pic" placeholder="Nama Teknisi">
+      </div>
+
+      <div>
+        <label for="spv">SPV</label>
+        <input type="text" id="spv" placeholder="Nama Supervisor">
+      </div>
+
+      <div>
+        <label for="type">Type</label>
+        <select id="type">
+          <option value="planned">Planned</option>
+          <option value="unplanned">Unplanned</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid" style="margin-top: 10px;">
+      <div>
+        <label>Jam Mulai</label>
+        <div style="display: flex; gap: 5px;">
+          <select id="startHour" aria-label="Jam Mulai"></select>
+          <select id="startMinute" aria-label="Menit Mulai"></select>
+        </div>
+      </div>
+
+      <div>
+        <label>Jam Selesai</label>
+        <div style="display: flex; gap: 5px;">
+          <select id="endHour" aria-label="Jam Selesai"></select>
+          <select id="endMinute" aria-label="Menit Selesai"></select>
+        </div>
+      </div>
+
+      <div>
+        <label for="durasi">Durasi (menit)</label>
+        <input type="text" id="durasi" readonly placeholder="Auto Calculate">
+      </div>
+    </div>
+
+    <div style="margin-top: 10px;">
+      <label for="work">Pekerjaan</label>
+      <textarea id="work" placeholder="Deskripsi pekerjaan yang dilakukan..."></textarea>
+    </div>
+
+    <div style="margin-top: 10px;">
+      <label for="cause">Penyebab</label>
+      <textarea id="cause" placeholder="Penyebab timbulnya kendala/kerusakan..."></textarea>
+    </div>
+
+    <div style="margin-top: 10px;">
+      <label for="benefit">Manfaat</label>
+      <textarea id="benefit" placeholder="Manfaat setelah penanganan..."></textarea>
+    </div>
+
+    <div style="margin-top: 10px;">
+      <label for="preventive">Preventive</label>
+      <textarea id="preventive" placeholder="Tindakan pencegahan ke depan..."></textarea>
+    </div>
+
+    <div class="grid" style="margin-top: 10px;">
+      <div>
+        <label for="before">Gambar Before</label>
+        <input type="file" id="before" accept="image/*">
+        <div id="pasteBefore" class="pasteBox" tabindex="0" role="button" aria-label="Paste Before Image">
+          Klik lalu Ctrl+V gambar BEFORE
+        </div>
+      </div>
+
+      <div>
+        <label for="after">Gambar After</label>
+        <input type="file" id="after" accept="image/*">
+        <div id="pasteAfter" class="pasteBox" tabindex="0" role="button" aria-label="Paste After Image">
+          Klik lalu Ctrl+V gambar AFTER
+        </div>
+      </div>
+    </div>
+
+    <div class="tools" style="margin-top: 15px;">
+      <button type="button" id="btnSave" onclick="saveData()">💾 SIMPAN & SYNC</button>
+      <button type="button" onclick="resetForm()">♻ RESET</button>
+    </div>
+
+  </div>
+
+  <!-- SECTION: HISTORY TABLE -->
+  <div id="history" class="card section">
+
+    <div class="tools">
+      <input type="text" id="search" placeholder="Cari WO / Mesin / PIC / Part..." oninput="debounceSearch()">
+      <input type="date" id="searchDate" onchange="loadData()">
+      <button type="button" onclick="loadData()">🔍 Cari</button>
+      <button type="button" onclick="exportExcel()">📗 Excel</button>
+      <button type="button" onclick="exportPDF()">📄 PDF</button>
+    </div>
+
+    <div style="overflow-x: auto; max-height: 650px;">
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>No WO</th>
+            <th>Tanggal</th>
+            <th>Mesin</th>
+            <th>Line</th>
+            <th>Part</th>
+            <th>PIC</th>
+            <th>SPV</th>
+            <th>Type</th>
+            <th>Mulai</th>
+            <th>Selesai</th>
+            <th>Durasi</th>
+            <th>Pekerjaan</th>
+            <th>Penyebab</th>
+            <th>Manfaat</th>
+            <th>Preventive</th>
+            <th>Before</th>
+            <th>After</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- MODAL IMAGE PREVIEW -->
+<div id="imgModal" onclick="this.style.display='none'">
+  <img id="zoomImg" src="" alt="Preview Gambar Log Report">
+</div>
+
+<script>
+/* KONFIGURASI API & INTEGRASI SHEET */
+const GOOGLE_WEB_APP_URL = "PASTE_URL_WEB_APP_GOOGLE_APPS_SCRIPT_DI_SINI";
+const IMGBB_API_KEY = "PASTE_API_KEY_IMGBB_DI_SINI";
+
+let db;
+let editId = null;
+let timerSearch = null;
+let cache = [];
+
+let pasteBeforeData = "";
+let pasteAfterData = "";
+let currentPasteTarget = "before";
+
+const el = id => document.getElementById(id);
+
+/* DATABASE INDEXEDDB */
+const request = indexedDB.open("maintenanceDB_V8_FULL", 1);
+
+request.onupgradeneeded = e => {
+  db = e.target.result;
+  if (!db.objectStoreNames.contains("wo")) {
+    db.createObjectStore("wo", { keyPath: "id" });
+  }
+};
+
+request.onsuccess = e => {
+  db = e.target.result;
+  init();
+};
+
+request.onerror = e => {
+  console.error("Gagal membuka IndexedDB:", e.target.error);
+  alert("Database lokal gagal dimuat. Pastikan browser Anda tidak dalam mode private ekstrem.");
+};
+
+/* INITIALIZATION */
+function init() {
+  el("woDate").value = today();
+  fillTime();
+  generateNoWO();
+  setupPaste("pasteBefore", "before");
+  setupPaste("pasteAfter", "after");
+  loadData();
+
+  if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+  }
+}
+
+/* TANGGAL SEKARANG */
+function today() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+/* NAVIGATION */
+function showSection(id) {
+  document.querySelectorAll(".section").forEach(x => x.classList.remove("active"));
+  const target = el(id);
+  if (target) target.classList.add("active");
+}
+
+/* DARK MODE TOGGLE */
+function toggleDark() {
+  document.body.classList.toggle("dark");
+  const isDark = document.body.classList.contains("dark");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+}
+
+/* POPULATE TIME SELECTORS */
+function fillTime() {
+  let hoursHTML = "", minutesHTML = "";
+  for (let i = 0; i < 24; i++) {
+    let h = String(i).padStart(2, "0");
+    hoursHTML += `<option value="${h}">${h}</option>`;
+  }
+  for (let i = 0; i < 60; i++) {
+    let m = String(i).padStart(2, "0");
+    minutesHTML += `<option value="${m}">${m}</option>`;
+  }
+
+  el("startHour").innerHTML = hoursHTML;
+  el("endHour").innerHTML = hoursHTML;
+  el("startMinute").innerHTML = minutesHTML;
+  el("endMinute").innerHTML = minutesHTML;
+
+  ["startHour", "startMinute", "endHour", "endMinute"].forEach(id => {
+    el(id).addEventListener("change", hitungDurasi);
+  });
+}
+
+/* HITUNG DURASI */
+function hitungDurasi() {
+  let s = (+el("startHour").value * 60) + (+el("startMinute").value);
+  let e = (+el("endHour").value * 60) + (+el("endMinute").value);
+  if (e < s) e += 1440; // Penanganan penyeberangan tengah malam
+  el("durasi").value = e - s;
+}
+
+/* AUTO NOMOR WO */
+function generateNoWO() {
+  if (editId) return;
+  let t = today().replaceAll("-", "");
+  let key = "counter_" + t;
+  let n = (+localStorage.getItem(key) || 0) + 1;
+  el("woNo").value = "MTC-" + t + "-" + String(n).padStart(3, "0");
+}
+
+/* HELPER UNTUK UNGGAH GAMBAR KE IMGBB */
+async function uploadToImgBB(base64OrFile) {
+  if (!base64OrFile) return "";
+  
+  if (typeof base64OrFile === "string" && base64OrFile.startsWith("http")) {
+    return base64OrFile;
+  }
+
+  try {
+    let formData = new FormData();
+    if (typeof base64OrFile === "string" && base64OrFile.startsWith("data:image")) {
+      const base64Clean = base64OrFile.split(',')[1];
+      formData.append("image", base64Clean);
+    } else if (base64OrFile instanceof File) {
+      formData.append("image", base64OrFile);
+    } else {
+      return "";
+    }
+
+    let res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+      method: "POST",
+      body: formData
+    });
+
+    let json = await res.json();
+    if (json.success) {
+      return json.data.url;
+    }
+  } catch (err) {
+    console.error("Gagal Upload Gambar ke ImgBB:", err);
+  }
+  return "";
+}
+
+/* SETUP PASTE EVENT PADA KOTAK */
+function setupPaste(id, target) {
+  const pasteBox = el(id);
+  if (!pasteBox) return;
+
+  const setActiveTarget = () => {
+    currentPasteTarget = target;
+    if (el("pasteBefore")) el("pasteBefore").style.borderColor = (target === "before") ? "#2563eb" : "#94a3b8";
+    if (el("pasteAfter")) el("pasteAfter").style.borderColor = (target === "after") ? "#2563eb" : "#94a3b8";
+  };
+
+  pasteBox.addEventListener("click", setActiveTarget);
+  pasteBox.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      setActiveTarget();
+    }
+  });
+}
+
+/* GLOBAL PASTE LISTENER (CTRL+V) */
+document.addEventListener("paste", e => {
+  const clipboardData = e.clipboardData || window.clipboardData;
+  if (!clipboardData || !clipboardData.items) return;
+
+  const items = clipboardData.items;
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].type.indexOf("image") !== -1) {
+      e.preventDefault();
+      const file = items[i].getAsFile();
+      const reader = new FileReader();
+
+      reader.onload = ev => {
+        const result = ev.target.result;
+        const targetBoxId = (currentPasteTarget === "before") ? "pasteBefore" : "pasteAfter";
+        const pasteBox = el(targetBoxId);
+
+        if (currentPasteTarget === "before") pasteBeforeData = result;
+        else pasteAfterData = result;
+
+        if (pasteBox) {
+          pasteBox.innerHTML = `<img src="${result}" class="thumb" alt="Preview Image" onclick="zoomImg('${result}')">`;
+        }
+      };
+      reader.readAsDataURL(file);
+      break;
+    }
+  }
+});
+
+/* SAVE DATA & SYNC TO GOOGLE SHEETS */
+async function saveData() {
+  let machineVal = el("machine").value.trim();
+  let lineVal = el("line").value;
+
+  if (machineVal !== "-" && !lineVal) {
+    alert("Silakan pilih Line terlebih dahulu!");
+    el("line").focus();
+    return;
+  }
+
+  const btnSave = el("btnSave");
+  btnSave.disabled = true;
+  btnSave.innerText = "⏳ Mengunggah & Menyimpan...";
+
+  try {
+    let rawBefore = pasteBeforeData || el("before").files[0];
+    let rawAfter = pasteAfterData || el("after").files[0];
+
+    if (editId) {
+      let existingData = cache.find(x => x.id === editId);
+      if (existingData) {
+        if (!rawBefore) rawBefore = existingData.before;
+        if (!rawAfter) rawAfter = existingData.after;
+      }
+    }
+
+    let beforeUrl = await uploadToImgBB(rawBefore);
+    let afterUrl = await uploadToImgBB(rawAfter);
+
+    let rec = {
+      id: editId || Date.now(),
+      woNo: el("woNo").value,
+      woDate: el("woDate").value,
+      machine: machineVal || "-",
+      line: lineVal || "-",
+      part: el("part").value,
+      pic: el("pic").value,
+      spv: el("spv").value,
+      type: el("type").value,
+      start: el("startHour").value + ":" + el("startMinute").value,
+      end: el("endHour").value + ":" + el("endMinute").value,
+      durasi: el("durasi").value,
+      work: el("work").value,
+      cause: el("cause").value,
+      benefit: el("benefit").value,
+      preventive: el("preventive").value,
+      before: beforeUrl,
+      after: afterUrl
+    };
+
+    if (GOOGLE_WEB_APP_URL && !GOOGLE_WEB_APP_URL.includes("PASTE_URL")) {
+      await fetch(GOOGLE_WEB_APP_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(rec)
+      });
+    }
+
+    let tx = db.transaction("wo", "readwrite");
+    let store = tx.objectStore("wo");
+    store.put(rec);
+
+    tx.oncomplete = () => {
+      if (!editId) {
+        let t = today().replaceAll("-", "");
+        let key = "counter_" + t;
+        let n = (+localStorage.getItem(key) || 0) + 1;
+        localStorage.setItem(key, n);
+      }
+
+      alert(editId ? "Data berhasil diupdate!" : "Data berhasil disimpan & terhubung ke Google Sheets!");
+      resetForm();
+      loadData();
+    };
+
+  } catch (err) {
+    console.error("Gagal menyimpan data:", err);
+    alert("Terjadi kesalahan saat menyimpan data!");
+  } finally {
+    btnSave.disabled = false;
+    btnSave.innerText = "💾 SIMPAN & SYNC";
+  }
+}
+
+/* RESET FORM */
+function resetForm() {
+  editId = null;
+  document.querySelectorAll("input, textarea").forEach(x => {
+    if (x.id !== "woNo" && x.type !== "date") x.value = "";
+  });
+
+  if (el("before")) el("before").value = "";
+  if (el("after")) el("after").value = "";
+
+  el("woDate").value = today();
+  el("line").value = "";
+
+  ["startHour", "startMinute", "endHour", "endMinute"].forEach(id => {
+    if (el(id)) el(id).value = "00";
+  });
+
+  el("durasi").value = "";
+  pasteBeforeData = "";
+  pasteAfterData = "";
+
+  el("pasteBefore").innerHTML = "Klik lalu Ctrl+V gambar BEFORE";
+  el("pasteAfter").innerHTML = "Klik lalu Ctrl+V gambar AFTER";
+  el("pasteBefore").style.borderColor = "#94a3b8";
+  el("pasteAfter").style.borderColor = "#94a3b8";
+
+  generateNoWO();
+}
+
+/* SEARCH DEBOUNCE */
+function debounceSearch() {
+  clearTimeout(timerSearch);
+  timerSearch = setTimeout(loadData, 250);
+}
+
+/* LOAD & FILTER DATA FROM INDEXEDDB */
+function loadData() {
+  if (!db) return;
+  let tx = db.transaction("wo", "readonly");
+  let req = tx.objectStore("wo").getAll();
+
+  req.onsuccess = () => {
+    let data = req.result.sort((a, b) => b.id - a.id);
+    let q = el("search").value.toLowerCase().trim();
+    let d = el("searchDate").value;
+
+    if (q) {
+      data = data.filter(x => {
+        let textContent = [
+          x.woNo, x.machine, x.line, x.part, x.pic, x.spv, x.work, x.cause, x.benefit, x.preventive
+        ].map(item => item || "").join(" ").toLowerCase();
+        return textContent.includes(q);
+      });
+    }
+
+    if (d) data = data.filter(x => x.woDate === d);
+
+    cache = data;
+    renderTable(data);
+  };
+}
+
+/* HELPER SANITIZE HTML */
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/* RENDER TABLE HISTORY */
+function renderTable(data) {
+  let html = "";
+  if (data.length === 0) {
+    el("tbody").innerHTML = `<tr><td colspan="19" style="text-align:center;">Tidak ada data ditemukan</td></tr>`;
+    return;
+  }
+
+  data.forEach((x, i) => {
+    html += `
+<tr>
+  <td>${i + 1}</td>
+  <td>${escapeHtml(x.woNo)}</td>
+  <td>${escapeHtml(x.woDate)}</td>
+  <td>${escapeHtml(x.machine)}</td>
+  <td>${escapeHtml(x.line)}</td>
+  <td>${escapeHtml(x.part)}</td>
+  <td>${escapeHtml(x.pic)}</td>
+  <td>${escapeHtml(x.spv)}</td>
+  <td>
+    ${x.type === "planned"
+      ? `<span class="badge">Planned</span>`
+      : `<span class="badge red">Unplanned</span>`}
+  </td>
+  <td>${escapeHtml(x.start)}</td>
+  <td>${escapeHtml(x.end)}</td>
+  <td>${escapeHtml(x.durasi)} m</td>
+  <td>${escapeHtml(x.work)}</td>
+  <td>${escapeHtml(x.cause)}</td>
+  <td>${escapeHtml(x.benefit)}</td>
+  <td>${escapeHtml(x.preventive)}</td>
+  <td style="text-align:center;">
+    ${x.before
+      ? `<img src="${x.before}" class="thumb" onclick="zoomImg('${x.before}')" alt="Before">`
+      : '-'}
+  </td>
+  <td style="text-align:center;">
+    ${x.after
+      ? `<img src="${x.after}" class="thumb" onclick="zoomImg('${x.after}')" alt="After">`
+      : '-'}
+  </td>
+  <td>
+    <button type="button" onclick="editData(${x.id})" style="margin-bottom:4px;">Edit</button>
+    <button type="button" onclick="hapusData(${x.id})" style="background:#dc2626;">Hapus</button>
+  </td>
+</tr>
+`;
+  });
+
+  el("tbody").innerHTML = html;
+}
+
+/* ZOOM PREVIEW IMAGE */
+function zoomImg(src) {
+  el("zoomImg").src = src;
+  el("imgModal").style.display = "flex";
+}
+
+/* EDIT DATA */
+function editData(id) {
+  let tx = db.transaction("wo", "readonly");
+  let req = tx.objectStore("wo").get(id);
+
+  req.onsuccess = () => {
+    let d = req.result;
+    if (!d) return;
+
+    editId = id;
+    el("woNo").value = d.woNo || "";
+    el("woDate").value = d.woDate || "";
+    el("machine").value = d.machine || "";
+    el("line").value = d.line || "";
+    el("part").value = d.part || "";
+    el("pic").value = d.pic || "";
+    el("spv").value = d.spv || "";
+    el("type").value = d.type || "planned";
+
+    let st = (d.start || "00:00").split(":");
+    let en = (d.end || "00:00").split(":");
+
+    el("startHour").value = st[0] || "00";
+    el("startMinute").value = st[1] || "00";
+    el("endHour").value = en[0] || "00";
+    el("endMinute").value = en[1] || "00";
+
+    el("durasi").value = d.durasi || "";
+    el("work").value = d.work || "";
+    el("cause").value = d.cause || "";
+    el("benefit").value = d.benefit || "";
+    el("preventive").value = d.preventive || "";
+
+    pasteBeforeData = d.before || "";
+    pasteAfterData = d.after || "";
+
+    if (d.before) {
+      el("pasteBefore").innerHTML = `<img src="${d.before}" class="thumb" alt="Before" onclick="zoomImg('${d.before}')">`;
+    } else {
+      el("pasteBefore").innerHTML = "Klik lalu Ctrl+V gambar BEFORE";
+    }
+
+    if (d.after) {
+      el("pasteAfter").innerHTML = `<img src="${d.after}" class="thumb" alt="After" onclick="zoomImg('${d.after}')">`;
+    } else {
+      el("pasteAfter").innerHTML = "Klik lalu Ctrl+V gambar AFTER";
+    }
+
+    showSection("input");
+  };
+}
+
+/* DELETE DATA */
+function hapusData(id) {
+  if (!confirm("Yakin ingin menghapus data laporan ini?")) return;
+  let tx = db.transaction("wo", "readwrite");
+  tx.objectStore("wo").delete(id);
+  tx.oncomplete = () => loadData();
+}
+
+/* EXPORT EXCEL FUNCTION */
+function exportExcel() {
+  if (!cache || cache.length === 0) {
+    alert("Tidak ada data untuk diexport!");
+    return;
+  }
+
+  let excelData = cache.map((x, idx) => ({
+    "No": idx + 1,
+    "No WO": x.woNo,
+    "Tanggal": x.woDate,
+    "Mesin": x.machine,
+    "Line": x.line,
+    "Part": x.part,
+    "PIC": x.pic,
+    "SPV": x.spv,
+    "Type": x.type,
+    "Jam Mulai": x.start,
+    "Jam Selesai": x.end,
+    "Durasi (menit)": x.durasi,
+    "Pekerjaan": x.work,
+    "Penyebab": x.cause,
+    "Manfaat": x.benefit,
+    "Preventive": x.preventive,
+    "URL Before": x.before,
+    "URL After": x.after
+  }));
+
+  let worksheet = XLSX.utils.json_to_sheet(excelData);
+  let workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Daily Report");
+  XLSX.writeFile(workbook, `Daily_Report_Maintenance_${today()}.xlsx`);
+}
+
+/* HELPER SANITIZE NAMA FILE PEKERJAAN */
+function cleanFileName(str) {
+  if (!str) return "";
+  return str.replace(/[^a-zA-Z0-9_\- ]/g, "").trim().replace(/\s+/g, "_").substring(0, 35);
+}
+
+/* EXPORT PDF FUNCTION (DENGAN PERBAIKAN CORS & BASE64 CONVERT) */
+async function exportPDF() {
+  const { jsPDF } = window.jspdf;
+  let doc = new jsPDF("l", "mm", "a4");
+
+  let data = [...cache];
+  let filterDate = el("searchDate").value;
+
+  if (filterDate) {
+    data = data.filter(x => x.woDate === filterDate);
+  }
+
+  if (data.length === 0) {
+    alert("Tidak ada data untuk diexport ke PDF!");
+    return;
+  }
+
+  let reportId = "WO-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
+
+  // Helper konversi URL ImgBB ke Base64 agar tidak terblokir CORS
+  async function getBase64FromUrl(url) {
+    if (!url) return null;
+    if (url.startsWith("data:image")) return url; // Jika sudah Base64
+
+    try {
+      let res = await fetch(url);
+      let blob = await res.blob();
+      return new Promise((resolve) => {
+        let reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = () => resolve(null);
+        reader.readAsDataURL(blob);
+      });
+    } catch (err) {
+      console.warn("Gagal mengambil gambar dari URL (CORS / Network):", err);
+      return null;
+    }
+  }
+
+  function getImageDimensions(base64) {
+    return new Promise(resolve => {
+      let img = new Image();
+      img.onload = () => resolve({ width: img.width, height: img.height });
+      img.onerror = () => resolve(null);
+      img.src = base64;
+    });
+  }
+
+  for (let i = 0; i < data.length; i++) {
+    let d = data[i];
+    let namaPekerjaanHeader = d.work ? "PEKERJAAN: " + d.work.toUpperCase() : "MAINTENANCE ORDER REPORT";
+
+    doc.setFontSize(11);
+    doc.setFont(undefined, 'bold');
+    doc.text(namaPekerjaanHeader, 14, 12);
+
+    doc.setFontSize(8);
+    doc.setFont(undefined, 'normal');
+    doc.text("Report ID : " + reportId, 14, 17);
+    doc.text(
+      "Tanggal : " + (d.woDate || "-") +
+      "   |   Mesin : " + (d.machine || "-") +
+      "   |   Line : " + (d.line || "-") +
+      "   |   WO No : " + (d.woNo || "-") +
+      "   |   Pekerjaan : " + (d.work || "-"),
+      14, 22
+    );
+
+    doc.autoTable({
+      startY: 25,
+      head: [[
+        "Tanggal", "Mesin", "Line", "Part", "PIC", "SPV", "Type",
+        "Start", "End", "Durasi",
+        "Pekerjaan", "Penyebab", "Manfaat", "Preventive"
+      ]],
+      body: [[
+        d.woDate || "-", d.machine || "-", d.line || "-", d.part || "-",
+        d.pic || "-", d.spv || "-", d.type || "-", d.start || "-",
+        d.end || "-", (d.durasi || "0") + "m", d.work || "-", d.cause || "-",
+        d.benefit || "-", d.preventive || "-"
+      ]],
+      styles: {
+        fontSize: 7,
+        overflow: "linebreak",
+        cellWidth: "wrap",
+        valign: "top",
+        lineWidth: 0.2
+      },
+      headStyles: {
+        fillColor: [36, 52, 71],
+        textColor: 255,
+        fontStyle: "bold"
+      },
+      columnStyles: {
+        10: { cellWidth: 35 },
+        11: { cellWidth: 30 },
+        12: { cellWidth: 30 },
+        13: { cellWidth: 30 }
+      }
+    });
+
+    let y = doc.lastAutoTable.finalY + 8;
+
+    async function drawImage(src, label, xBase) {
+      if (!src) return;
+
+      doc.setFontSize(9);
+      doc.setFont(undefined, 'bold');
+      doc.text(label, xBase, y);
+
+      let base64Img = await getBase64FromUrl(src);
+      if (!base64Img) return;
+
+      let dim = await getImageDimensions(base64Img);
+      if (!dim) return;
+
+      let maxW = 120, maxH = 80;
+      let ratio = dim.width / dim.height;
+      let w = maxW, h = w / ratio;
+
+      if (h > maxH) {
+        h = maxH;
+        w = h * ratio;
+      }
+
+      try {
+        // Otomatis mendeteksi format (PNG/JPEG) dari header Data URL
+        let format = base64Img.includes("image/png") ? "PNG" : "JPEG";
+        doc.addImage(base64Img, format, xBase, y + 3, w, h);
+      } catch (err) {
+        console.warn("Gagal merender gambar ke PDF:", err);
+      }
+    }
+
+    await drawImage(d.before, "BEFORE DOCUMENTATION:", 14);
+    await drawImage(d.after, "AFTER DOCUMENTATION:", 150);
+
+    if (i < data.length - 1) doc.addPage();
+  }
+
+  let pdfName = "Maintenance_Report";
+  if (data.length === 1 && data[0].work) {
+    let cleanWork = cleanFileName(data[0].work);
+    if (cleanWork) pdfName = `Report_${cleanWork}`;
+  } else if (data.length > 1) {
+    pdfName = `Report_Multiple_Pekerjaan_${today()}`;
+  }
+
+  doc.save(`${pdfName}_${today()}.pdf`);
+}
+</script>
+</body>
+</html>
