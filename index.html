@@ -13,98 +13,97 @@
   <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable"></script>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-    :root {
-      --bg: #f1f5f9;
-      --card-bg: rgba(255, 255, 255, 0.95);
-      --card-border: #e2e8f0;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --primary-glow: rgba(37, 99, 235, 0.25);
-      --accent: #3b82f6;
-      --success: #10b981;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-      --table-head-bg: #1e293b;
-      --table-head-text: #f8fafc;
-      --table-row-hover: #f8fafc;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-      --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
-      --radius: 16px;
-    }
+  :root {
+    /* GRADASI BACKGROUND RED & GRAY */
+    --bg-gradient: linear-gradient(135deg, #7f1d1d 0%, #334155 50%, #1e293b 100%);
+    --card-bg: rgba(255, 255, 255, 0.96);
+    --card-border: #cbd5e1;
+    --text-main: #0f172a;
+    --text-muted: #475569;
+    --primary: #dc2626; /* Tema Utama Merah Crimson */
+    --primary-hover: #b91c1c;
+    --primary-glow: rgba(220, 38, 38, 0.3);
+    --accent: #475569; /* Tema Abu-abu Slate */
+    --success: #16a34a;
+    --danger: #dc2626;
+    --warning: #d97706;
+    --table-border: #94a3b8;
+    --table-head-bg: #1e293b;
+    --table-head-text: #f8fafc;
+    --table-row-hover: #f1f5f9;
+    --radius: 12px;
+  }
 
-    body.dark {
-      --bg: #0f172a;
-      --card-bg: rgba(30, 41, 59, 0.92);
-      --card-border: #334155;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --primary: #3b82f6;
-      --primary-hover: #60a5fa;
-      --primary-glow: rgba(59, 130, 246, 0.35);
-      --accent: #60a5fa;
-      --table-head-bg: #020617;
-      --table-head-text: #f8fafc;
-      --table-row-hover: #1e293b;
-      --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-    }
+  body.dark {
+    --bg-gradient: linear-gradient(135deg, #450a0a 0%, #0f172a 60%, #020617 100%);
+    --card-bg: rgba(30, 41, 59, 0.94);
+    --card-border: #475569;
+    --text-main: #f8fafc;
+    --text-muted: #cbd5e1;
+    --primary: #ef4444;
+    --primary-hover: #f87171;
+    --primary-glow: rgba(239, 68, 68, 0.4);
+    --accent: #94a3b8;
+    --table-border: #64748b;
+    --table-head-bg: #020617;
+    --table-head-text: #f8fafc;
+    --table-row-hover: #334155;
+  }
 
-    * {
-      box-sizing: border-box;
-      user-select: none;
-      -webkit-user-select: none;
-    }
+  * {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+  }
 
-    input, textarea, select {
-      user-select: text;
-      -webkit-user-select: text;
-    }
+  input, textarea, select {
+    user-select: text;
+    -webkit-user-select: text;
+  }
 
-    body {
-      margin: 0;
-      padding: 24px 16px;
-      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text-main);
-      transition: background-color 0.3s ease, color 0.3s ease;
-      min-height: 100vh;
-    }
+  body {
+    margin: 0;
+    padding: 16px;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background: var(--bg-gradient); /* Menggunakan Gradasi Merah-Abu */
+    background-attachment: fixed;
+    color: var(--text-main);
+    transition: background 0.3s ease, color 0.2s ease;
+    min-height: 100vh;
+  }
 
     .container {
-      max-width: 1750px;
+      max-width: 1780px;
       margin: auto;
     }
 
     /* HEADER CARD & NAVBAR */
     .header-card {
       background: var(--card-bg);
-      backdrop-filter: blur(12px);
       border: 1px solid var(--card-border);
-      padding: 24px;
+      padding: 16px 20px;
       border-radius: var(--radius);
-      margin-bottom: 20px;
-      box-shadow: var(--shadow-md);
+      margin-bottom: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
+      gap: 14px;
     }
 
     .header-title h1 {
-      margin: 0 0 6px 0;
-      font-size: 26px;
+      margin: 0 0 4px 0;
+      font-size: 22px;
       font-weight: 800;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      background: linear-gradient(135deg, #2563eb, #1e40af);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     body.dark .header-title h1 {
@@ -116,204 +115,195 @@
     .header-title p {
       margin: 0;
       color: var(--text-muted);
-      font-size: 13.5px;
-      max-width: 650px;
-      line-height: 1.5;
+      font-size: 13px;
+      max-width: 700px;
     }
 
     .nav-pills {
       display: flex;
-      gap: 10px;
-      background: rgba(148, 163, 184, 0.12);
-      padding: 6px;
-      border-radius: 12px;
+      gap: 8px;
+      background: rgba(148, 163, 184, 0.15);
+      padding: 4px;
+      border-radius: 10px;
     }
 
     .nav-btn {
-      padding: 10px 20px;
-      border-radius: 10px;
+      padding: 8px 16px;
+      border-radius: 8px;
       border: none;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 700;
       cursor: pointer;
       background: transparent;
       color: var(--text-muted);
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      transition: all 0.2s ease;
     }
 
     .nav-btn.active {
       background: var(--primary);
       color: #ffffff;
-      box-shadow: 0 4px 12px var(--primary-glow);
+      box-shadow: 0 2px 8px var(--primary-glow);
     }
 
     .theme-btn {
-      padding: 10px 16px;
-      border-radius: 10px;
+      padding: 8px 14px;
+      border-radius: 8px;
       border: 1px solid var(--card-border);
       background: var(--card-bg);
       color: var(--text-main);
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
-      font-size: 13px;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      font-size: 12px;
     }
 
-    .theme-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-sm);
-    }
-
-    /* STATS SUMMARY BAR */
+    /* STATS SUMMARY BAR DENGAN TAG WARNA BERVARIASI */
     .stats-bar {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 14px;
-      margin-bottom: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
     }
 
     .stat-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
       border-radius: var(--radius);
-      padding: 16px 20px;
-      box-shadow: var(--shadow-sm);
+      padding: 14px 18px;
       display: flex;
       align-items: center;
-      gap: 16px;
-      transition: transform 0.2s ease;
+      gap: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border: 1px solid;
     }
 
-    .stat-card:hover {
-      transform: translateY(-3px);
+    /* Tag Warna Khusus Dashboard */
+    .stat-card.blue {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(37, 99, 235, 0.02));
+      border-color: #93c5fd;
+    }
+    .stat-card.green {
+      background: linear-gradient(135deg, rgba(22, 163, 74, 0.08), rgba(22, 163, 74, 0.02));
+      border-color: #86efac;
+    }
+    .stat-card.red {
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.08), rgba(220, 38, 38, 0.02));
+      border-color: #fca5a5;
+    }
+    .stat-card.amber {
+      background: linear-gradient(135deg, rgba(217, 119, 6, 0.08), rgba(217, 119, 6, 0.02));
+      border-color: #fde047;
     }
 
     .stat-icon {
-      width: 46px;
-      height: 46px;
-      border-radius: 12px;
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 20px;
+      font-weight: bold;
     }
 
-    .stat-blue { background: rgba(37, 99, 235, 0.12); color: #2563eb; }
-    .stat-green { background: rgba(16, 185, 129, 0.12); color: #10b981; }
-    .stat-red { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
-    .stat-amber { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+    .stat-card.blue .stat-icon { background: #2563eb; color: #fff; }
+    .stat-card.green .stat-icon { background: #16a34a; color: #fff; }
+    .stat-card.red .stat-icon { background: #dc2626; color: #fff; }
+    .stat-card.amber .stat-icon { background: #d97706; color: #fff; }
 
     .stat-info .stat-value {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 800;
-      line-height: 1.2;
+      line-height: 1.1;
     }
 
     .stat-info .stat-label {
-      font-size: 12px;
+      font-size: 11.5px;
       color: var(--text-muted);
-      font-weight: 600;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
 
     /* MAIN CARD CONTAINERS */
     .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      padding: 24px;
+      padding: 18px;
       border-radius: var(--radius);
-      margin-bottom: 20px;
-      box-shadow: var(--shadow-md);
+      margin-bottom: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     }
 
     .section-header {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 18px;
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 14px;
       color: var(--text-main);
       display: flex;
       align-items: center;
       gap: 8px;
-      border-bottom: 2px solid rgba(148, 163, 184, 0.15);
-      padding-bottom: 10px;
+      border-bottom: 2px solid var(--card-border);
+      padding-bottom: 8px;
     }
 
     /* FORM GRID & STYLING */
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-      margin-bottom: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 10px;
     }
 
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
     }
 
     label {
-      font-size: 12.5px;
+      font-size: 11.5px;
       font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
     }
 
     input, select, textarea {
-      padding: 11px 14px;
-      border-radius: 10px;
+      padding: 8px 11px;
+      border-radius: 8px;
       border: 1.5px solid var(--card-border);
-      font-size: 13.5px;
+      font-size: 13px;
       font-family: inherit;
-      background: rgba(255, 255, 255, 0.5);
+      background: var(--card-bg);
       color: var(--text-main);
-      transition: all 0.2s ease;
-    }
-
-    body.dark input, body.dark select, body.dark textarea {
-      background: rgba(15, 23, 42, 0.6);
     }
 
     input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 4px var(--primary-glow);
+      box-shadow: 0 0 0 3px var(--primary-glow);
     }
 
     textarea {
-      min-height: 90px;
+      min-height: 70px;
       resize: vertical;
     }
 
     /* PASTE BOX ENHANCEMENTS */
     .pasteBox {
-      border: 2px dashed #94a3b8;
-      padding: 14px;
-      border-radius: 12px;
+      border: 2px dashed var(--table-border);
+      padding: 10px;
+      border-radius: 8px;
       text-align: center;
-      margin-top: 6px;
-      background: rgba(248, 250, 252, 0.7);
+      margin-top: 4px;
+      background: rgba(241, 245, 249, 0.5);
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       color: var(--text-muted);
-      transition: all 0.25s ease;
-      min-height: 95px;
+      min-height: 80px;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
-    }
-
-    body.dark .pasteBox {
-      background: rgba(15, 23, 42, 0.4);
-      border-color: #475569;
     }
 
     .pasteBox:hover, .pasteBox.active-target {
@@ -329,228 +319,182 @@
 
     .pasteBox .btn-remove-img {
       position: absolute;
-      top: -8px;
-      right: -8px;
-      background: #ef4444;
+      top: -6px;
+      right: -6px;
+      background: #dc2626;
       color: white;
       border: none;
       border-radius: 50%;
-      width: 22px;
-      height: 22px;
-      font-size: 12px;
+      width: 20px;
+      height: 20px;
+      font-size: 11px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
 
     /* BUTTON ACTION BAR */
     .action-bar {
       display: flex;
-      gap: 12px;
-      margin-top: 20px;
-      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
     }
 
     .btn-main {
-      padding: 12px 24px;
-      border-radius: 10px;
+      padding: 10px 20px;
+      border-radius: 8px;
       border: none;
       font-weight: 700;
-      font-size: 14px;
+      font-size: 13px;
       cursor: pointer;
-      transition: all 0.25s ease;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       flex: 1;
-      min-width: 160px;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      background: var(--primary);
       color: #fff;
-      box-shadow: 0 4px 14px var(--primary-glow);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px var(--primary-glow);
     }
 
     .btn-secondary {
-      background: rgba(148, 163, 184, 0.15);
+      background: rgba(148, 163, 184, 0.2);
       color: var(--text-main);
     }
 
-    .btn-secondary:hover {
-      background: rgba(148, 163, 184, 0.25);
-    }
-
-    /* TABLE AUTO-SIZE & RESPONSIVE FIXES */
+    /* TABLE LAYOUT RIGID & TEGAS (MEMPERBAIKI SPACE KOSONG & GARIS KOLOM) */
     .table-container {
       width: 100%;
       overflow-x: auto;
-      max-height: 680px;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
+      max-height: 650px;
+      border-radius: 8px;
+      border: 1.5px solid var(--table-border);
       background: var(--card-bg);
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
     }
 
     table.auto-fit-table {
       width: 100%;
-      min-width: 1600px;
-      border-collapse: separate;
-      border-spacing: 0;
-      font-size: 13px;
+      min-width: 1450px; /* Lebar rapat optimal */
+      border-collapse: collapse;
+      font-size: 12.5px;
     }
 
+    /* Garis Kolom & Baris Lebih Tegas */
     table.auto-fit-table th, table.auto-fit-table td {
-      border-bottom: 1px solid var(--card-border);
-      border-right: 1px solid var(--card-border);
-      padding: 10px 12px;
-      vertical-align: middle;
+      border: 1px solid var(--table-border);
+      padding: 8px 10px; /* Padding lebih kecil agar rapat & tidak banyak space kosong */
+      vertical-align: top;
       word-wrap: break-word;
       white-space: normal;
     }
 
-    table.auto-fit-table th:last-child, table.auto-fit-table td:last-child {
-      border-right: none;
-    }
-
+    /* TAG WARNA VARIASI HEADER TABEL */
     table.auto-fit-table th {
       background: var(--table-head-bg);
       color: var(--table-head-text);
       font-weight: 700;
       text-transform: uppercase;
-      font-size: 11.5px;
-      letter-spacing: 0.6px;
+      font-size: 11px;
+      letter-spacing: 0.5px;
       position: sticky;
       top: 0;
       z-index: 10;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
-    /* DYNAMIC COLUMN WIDTHS (PERBAIKAN BUG AUTOSIZE) */
-    .col-no { width: 45px; text-align: center; }
-    .col-wo { width: 125px; font-weight: 700; color: var(--primary); }
-    .col-date { width: 95px; }
-    .col-machine { width: 130px; font-weight: 600; }
-    .col-line { width: 65px; text-align: center; }
-    .col-part { width: 110px; }
-    .col-pic { width: 100px; }
-    .col-spv { width: 100px; }
-    .col-type { width: 95px; text-align: center; }
-    .col-time { width: 65px; text-align: center; }
-    .col-dur { width: 75px; text-align: center; font-weight: 700; }
-    .col-desc { min-width: 180px; max-width: 280px; line-height: 1.45; }
-    .col-img { width: 85px; text-align: center; }
-    .col-act { width: 110px; text-align: center; }
+    /* Variasi Akses Warna Header per Kelompok */
+    table.auto-fit-table th.th-info { border-top: 3px solid #3b82f6; }
+    table.auto-fit-table th.th-work { border-top: 3px solid #10b981; }
+    table.auto-fit-table th.th-doc { border-top: 3px solid #f59e0b; }
+    table.auto-fit-table th.th-act { border-top: 3px solid #ef4444; }
 
-    table.auto-fit-table tbody tr {
-      transition: background-color 0.15s ease;
-    }
+    /* INTEGRASI RAPAT LEBAR KOLOM (NO WASTE SPACE) */
+    .col-no { width: 38px; text-align: center; font-weight: bold; }
+    .col-wo { width: 115px; font-weight: 700; color: var(--primary); }
+    .col-date { width: 90px; }
+    .col-machine { width: 120px; font-weight: 600; }
+    .col-line { width: 55px; text-align: center; }
+    .col-part { width: 100px; }
+    .col-pic { width: 90px; }
+    .col-spv { width: 90px; }
+    .col-type { width: 90px; text-align: center; }
+    .col-time { width: 58px; text-align: center; }
+    .col-dur { width: 65px; text-align: center; font-weight: 700; }
+    .col-desc { min-width: 150px; line-height: 1.4; }
+    .col-img { width: 75px; text-align: center; }
+    .col-act { width: 95px; text-align: center; }
 
     table.auto-fit-table tbody tr:hover {
       background-color: var(--table-row-hover);
     }
 
-    .section {
-      display: none;
-    }
-
-    .section.active {
-      display: block;
-    }
-
     .thumb {
-      width: 60px;
-      height: 60px;
+      width: 55px;
+      height: 55px;
       object-fit: cover;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
       border: 1px solid var(--card-border);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .thumb:hover {
-      transform: scale(1.08);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
     .badge {
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 10.5px;
       font-weight: 700;
       color: #fff;
-      background: #10b981;
+      background: var(--success);
       display: inline-block;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
 
     .badge.red {
-      background: #ef4444;
+      background: var(--danger);
     }
 
     .action-btn-group {
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
     }
 
     .btn-tbl {
-      padding: 6px 12px;
+      padding: 5px 10px;
       border-radius: 6px;
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 700;
       border: none;
       cursor: pointer;
-      transition: all 0.2s ease;
     }
 
     .btn-edit { background: rgba(37, 99, 235, 0.12); color: var(--primary); }
-    .btn-edit:hover { background: var(--primary); color: #fff; }
-
-    .btn-del { background: rgba(239, 68, 68, 0.12); color: var(--danger); }
-    .btn-del:hover { background: var(--danger); color: #fff; }
+    .btn-del { background: rgba(220, 38, 38, 0.12); color: var(--danger); }
 
     /* SEARCH & FILTER BAR */
     .filter-bar {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       align-items: center;
     }
 
     .filter-bar input {
       flex: 1;
-      min-width: 200px;
+      min-width: 180px;
     }
 
     .filter-bar .btn-tool {
-      padding: 11px 18px;
-      border-radius: 10px;
+      padding: 8px 14px;
+      border-radius: 8px;
       border: 1px solid var(--card-border);
       font-weight: 700;
-      font-size: 13px;
+      font-size: 12px;
       cursor: pointer;
       background: var(--card-bg);
       color: var(--text-main);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s ease;
-    }
-
-    .filter-bar .btn-tool:hover {
-      border-color: var(--primary);
-      color: var(--primary);
     }
 
     /* MODAL ZOOM */
@@ -559,23 +503,16 @@
       position: fixed;
       inset: 0;
       background: rgba(15, 23, 42, 0.88);
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(4px);
       justify-content: center;
       align-items: center;
       z-index: 9999;
-      animation: fadeIn 0.25s ease;
     }
 
     #imgModal img {
       max-width: 90%;
       max-height: 90%;
-      border-radius: 14px;
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      border-radius: 10px;
     }
   </style>
 </head>
@@ -590,7 +527,7 @@
       <p>Dokumen formal digital mencatat seluruh aktivitas teknis, pemeliharaan (maintenance), penggunaan material, dan kondisi utilitas harian.</p>
     </div>
 
-    <div style="display: flex; align-items: center; gap: 12px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
       <div class="nav-pills">
         <button type="button" class="nav-btn active" id="nav-input" onclick="showSection('input')">📝 INPUT</button>
         <button type="button" class="nav-btn" id="nav-history" onclick="showSection('history')">📋 HISTORY</button>
@@ -599,31 +536,31 @@
     </div>
   </div>
 
-  <!-- STATS SUMMARY BAR -->
+  <!-- STATS SUMMARY BAR DENGAN TAG WARNA KHUSUS -->
   <div class="stats-bar">
-    <div class="stat-card">
-      <div class="stat-icon stat-blue">📊</div>
+    <div class="stat-card blue">
+      <div class="stat-icon">📊</div>
       <div class="stat-info">
         <div class="stat-value" id="stat-total">0</div>
         <div class="stat-label">Total Work Orders</div>
       </div>
     </div>
-    <div class="stat-card">
-      <div class="stat-icon stat-green">✅</div>
+    <div class="stat-card green">
+      <div class="stat-icon">✅</div>
       <div class="stat-info">
         <div class="stat-value" id="stat-planned">0</div>
         <div class="stat-label">Planned Orders</div>
       </div>
     </div>
-    <div class="stat-card">
-      <div class="stat-icon stat-red">🚨</div>
+    <div class="stat-card red">
+      <div class="stat-icon">🚨</div>
       <div class="stat-info">
         <div class="stat-value" id="stat-unplanned">0</div>
         <div class="stat-label">Unplanned Orders</div>
       </div>
     </div>
-    <div class="stat-card">
-      <div class="stat-icon stat-amber">⏱️</div>
+    <div class="stat-card amber">
+      <div class="stat-icon">⏱️</div>
       <div class="stat-info">
         <div class="stat-value" id="stat-downtime">0m</div>
         <div class="stat-label">Total Downtime</div>
@@ -730,27 +667,27 @@
       </div>
     </div>
 
-    <div class="form-group" style="margin-top: 10px;">
+    <div class="form-group" style="margin-top: 8px;">
       <label for="work">Deskripsi Pekerjaan</label>
       <textarea id="work" placeholder="Deskripsi pekerjaan teknis yang dilakukan..."></textarea>
     </div>
 
-    <div class="form-group" style="margin-top: 10px;">
+    <div class="form-group" style="margin-top: 8px;">
       <label for="cause">Penyebab Kerusakan/Kendala</label>
       <textarea id="cause" placeholder="Penyebab utama timbulnya kendala/kerusakan..."></textarea>
     </div>
 
-    <div class="form-group" style="margin-top: 10px;">
+    <div class="form-group" style="margin-top: 8px;">
       <label for="benefit">Manfaat Penanganan</label>
       <textarea id="benefit" placeholder="Manfaat & hasil setelah penanganan..."></textarea>
     </div>
 
-    <div class="form-group" style="margin-top: 10px;">
+    <div class="form-group" style="margin-top: 8px;">
       <label for="preventive">Tindakan Preventive</label>
       <textarea id="preventive" placeholder="Tindakan pencegahan & inspeksi berkala ke depan..."></textarea>
     </div>
 
-    <div class="form-grid" style="margin-top: 14px;">
+    <div class="form-grid" style="margin-top: 10px;">
       <div class="form-group">
         <label for="before">Gambar Before</label>
         <input type="file" id="before" accept="image/*" onchange="handleFileSelect('before')">
@@ -781,36 +718,36 @@
 
     <div class="filter-bar">
       <input type="text" id="search" placeholder="🔍 Cari No WO / Mesin / PIC / Pekerjaan..." oninput="debounceSearch()">
-      <input type="date" id="searchDate" onchange="loadData()" style="max-width: 180px;">
+      <input type="date" id="searchDate" onchange="loadData()" style="max-width: 160px;">
       <button type="button" class="btn-tool" onclick="loadData()">🔍 Cari</button>
       <button type="button" class="btn-tool" onclick="exportExcel()">📗 Export Excel</button>
       <button type="button" class="btn-tool" onclick="exportPDF()">📄 Export PDF</button>
     </div>
 
-    <!-- RESPONSIVE AUTO-SIZE TABLE CONTAINER -->
+    <!-- RESPONSIVE AUTO-SIZE TABLE CONTAINER (TEGAS & TANPA SPACE KOSONG) -->
     <div class="table-container">
       <table class="auto-fit-table">
         <thead>
           <tr>
-            <th class="col-no">No</th>
-            <th class="col-wo">No WO</th>
-            <th class="col-date">Tanggal</th>
-            <th class="col-machine">Mesin</th>
-            <th class="col-line">Line</th>
-            <th class="col-part">Part</th>
-            <th class="col-pic">PIC</th>
-            <th class="col-spv">SPV</th>
-            <th class="col-type">Type</th>
-            <th class="col-time">Mulai</th>
-            <th class="col-time">Selesai</th>
-            <th class="col-dur">Durasi</th>
-            <th class="col-desc">Pekerjaan</th>
-            <th class="col-desc">Penyebab</th>
-            <th class="col-desc">Manfaat</th>
-            <th class="col-desc">Preventive</th>
-            <th class="col-img">Before</th>
-            <th class="col-img">After</th>
-            <th class="col-act">Aksi</th>
+            <th class="col-no th-info">No</th>
+            <th class="col-wo th-info">No WO</th>
+            <th class="col-date th-info">Tanggal</th>
+            <th class="col-machine th-info">Mesin</th>
+            <th class="col-line th-info">Line</th>
+            <th class="col-part th-info">Part</th>
+            <th class="col-pic th-info">PIC</th>
+            <th class="col-spv th-info">SPV</th>
+            <th class="col-type th-info">Type</th>
+            <th class="col-time th-info">Mulai</th>
+            <th class="col-time th-info">Selesai</th>
+            <th class="col-dur th-info">Durasi</th>
+            <th class="col-desc th-work">Pekerjaan</th>
+            <th class="col-desc th-work">Penyebab</th>
+            <th class="col-desc th-work">Manfaat</th>
+            <th class="col-desc th-work">Preventive</th>
+            <th class="col-img th-doc">Before</th>
+            <th class="col-img th-doc">After</th>
+            <th class="col-act th-act">Aksi</th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -1013,7 +950,7 @@ async function handleFileSelect(type) {
     </div>`;
 }
 
-/* REMOVE IMAGE FEATURE (UPGRADE) */
+/* REMOVE IMAGE FEATURE */
 function removeImage(type) {
   if (type === "before") {
     pasteBeforeData = "";
@@ -1256,11 +1193,11 @@ function escapeHtml(str) {
     .replace(/'/g, "&#039;");
 }
 
-/* RENDER TABLE HISTORY (AUTOSIZE FIXED) */
+/* RENDER TABLE HISTORY (RAPAT & OPTIMAL) */
 function renderTable(data) {
   let html = "";
   if (data.length === 0) {
-    el("tbody").innerHTML = `<tr><td colspan="19" style="text-align:center; padding: 30px; color: var(--text-muted);">Tidak ada data laporan ditemukan</td></tr>`;
+    el("tbody").innerHTML = `<tr><td colspan="19" style="text-align:center; padding: 25px; color: var(--text-muted);">Tidak ada data laporan ditemukan</td></tr>`;
     return;
   }
 
@@ -1385,7 +1322,7 @@ function hapusData(id) {
   tx.oncomplete = () => loadData();
 }
 
-/* EXPORT EXCEL FUNCTION (PERBAIKAN BUG) */
+/* EXPORT EXCEL FUNCTION */
 function exportExcel() {
   if (!cache || cache.length === 0) {
     alert("Tidak ada data untuk diexport!");
@@ -1430,7 +1367,7 @@ function cleanFileName(str) {
   return str.replace(/[^a-zA-Z0-9_\- ]/g, "").trim().replace(/\s+/g, "_").substring(0, 35);
 }
 
-/* EXPORT PDF FUNCTION (PERBAIKAN BUG) */
+/* EXPORT PDF FUNCTION */
 async function exportPDF() {
   const { jsPDF } = window.jspdf;
   let doc = new jsPDF("l", "mm", "a4");
