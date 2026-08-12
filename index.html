@@ -530,10 +530,10 @@
         <label for="woNo">No WO</label>
         <input type="text" id="woNo" readonly placeholder="Auto Generated">
       </div>
-<div class="form-group">
-  <label for="woDate">Tanggal</label>
-  <input type="date" id="woDate" onchange="generateNoWO()">
-</div>
+      <div class="form-group">
+        <label for="woDate">Tanggal</label>
+        <input type="date" id="woDate" onchange="generateNoWO()">
+      </div>
       <div class="form-group">
         <label for="machine">Mesin</label>
         <input list="machineList" id="machine" placeholder="Pilih / Ketik Mesin">
@@ -657,8 +657,8 @@
     <div class="section-header">📊 RIWAYAT LAPORAN MAINTENANCE</div>
     <div class="filter-bar">
       <input type="text" id="search" placeholder="🔍 Cari No WO / Mesin / PIC / Pekerjaan..." oninput="debounceSearch()">
-      <input type="date" id="searchDate" onchange="loadData()" style="max-width: 160px;">
-      <button type="button" class="btn-tool" onclick="loadData()">🔍 Cari</button>
+      <input type="date" id="searchDate" onchange="loadDataLocal()" style="max-width: 160px;">
+      <button type="button" class="btn-tool" onclick="fetchFromGoogleSheets()">🔄 Refresh Server</button>
       <button type="button" class="btn-tool" onclick="exportExcel()">📗 Export Excel</button>
       <button type="button" class="btn-tool" onclick="exportPDF()">📄 Export PDF</button>
     </div>
@@ -700,7 +700,7 @@
 </div>
 
 <script>
-/* KONFIGURASI INTEGRASI GOOGLE SHEETS (JANGAN LUPA SESUAIKAN URL DEPLOY ANDA) */
+/* KONFIGURASI INTEGRASI GOOGLE SHEETS */
 const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyNNGB8HtCYF0cPsa4FYgAsYzK-DuD8giFtpPj8u5HUHPj2giqU-r-8z0PslzMGVeg/exec";
 
 const PLACEHOLDER_SVG = "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2270%22%20height%3D%2270%22%20viewBox%3D%220%200%2070%2070%22%3E%3Crect%20fill%3D%22%23e2e8f0%22%20width%3D%2270%22%20height%3D%2270%22%2F%3E%3Ctext%20fill%3D%22%2394a3b8%22%20font-family%3D%22sans-serif%22%20font-size%3D%2210%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20dy%3D%22.3em%22%3ENo%20Image%3C%2Ftext%3E%3C%2Fsvg%3E";
@@ -733,7 +733,6 @@ request.onsuccess = e => {
 
 request.onerror = e => {
   console.error("Gagal membuka IndexedDB:", e.target.error);
-  // FALLBACK UNTUK HP: JIKA DATABASE LOKAL DIBLOKIR BROWSER, LANGSUNG TARIK DARI GOOGLE SHEETS
   fetchFromGoogleSheets();
 };
 
@@ -741,16 +740,15 @@ request.onerror = e => {
 function init() {
   el("woDate").value = today();
   fillTime();
-  generateNoWO();
   setupPaste("pasteBefore", "before");
   setupPaste("pasteAfter", "after");
-  
-  // TARIK DATA (PARAMETER 'TRUE' UNTUK OTOMATIS AMBIL DARI ONLINE JIKA HP KOSONG)
-  loadData(true);
 
   if (localStorage.getItem("theme") === "dark") {
     document.body.classList.add("dark");
   }
+
+  // WAJIB TERKONEKSI DAN MENARIK DATA SERVER TERLEBIH DAHULU AGAR 100% SINKRON
+  fetchFromGoogleSheets();
 }
 
 function today() {
@@ -797,21 +795,19 @@ function hitungDurasi() {
   el("durasi").value = e - s;
 }
 
+/* FUNGSI GENERATE NO WO SINKRON */
 function generateNoWO() {
-  if (editId) return; // Jika sedang mode edit, No WO tidak berubah
+  if (editId) return;
 
   let selectedDate = el("woDate").value;
   if (!selectedDate) selectedDate = today();
 
-  // Format tanggal YYYYMMDD (contoh: 2026-08-11 -> 20260811)
   let dateFormatted = selectedDate.replaceAll("-", "");
   let prefix = "MTC-" + dateFormatted + "-";
 
-  // Cari counter terbesar di LocalStorage untuk tanggal yang dipilih
   let keyCounter = "counter_" + dateFormatted;
   let counterLS = +localStorage.getItem(keyCounter) || 0;
 
-  // Cari nomor urut terbesar dari data yang tersimpan di cache (IndexedDB) pada tanggal yang sama
   let maxSeqInCache = 0;
   if (Array.isArray(cache) && cache.length > 0) {
     cache.forEach(item => {
@@ -825,10 +821,7 @@ function generateNoWO() {
     });
   }
 
-  // Gunakan angka terbesar antara LocalStorage dan Data Tersimpan, lalu tambahkan +1
   let nextSeq = Math.max(counterLS, maxSeqInCache) + 1;
-
-  // Format 3 digit (contoh: 001, 002, 003)
   el("woNo").value = prefix + String(nextSeq).padStart(3, "0");
 }
 
@@ -931,35 +924,37 @@ document.addEventListener("paste", e => {
   }
 });
 
-/* FUNGSI BARU: MENARIK DATA DARI GOOGLE SHEETS JIKA HP KOSONG */
+/* FUNGSI SINKRONISASI SERVER UTAMA (GOOGLE SHEETS) */
 async function fetchFromGoogleSheets() {
   if (!GOOGLE_WEB_APP_URL) return;
 
-  el("tbody").innerHTML = `<tr><td colspan="19" style="text-align:center; padding: 20px;">⏳ Mengambil data dari server Google Sheets...</td></tr>`;
+  el("tbody").innerHTML = `<tr><td colspan="19" style="text-align:center; padding: 25px; color: var(--text-muted);">⏳ Mengambil & Menyingkronkan Data Terbaru...</td></tr>`;
 
   try {
-    const res = await fetch(GOOGLE_WEB_APP_URL);
+    const res = await fetch(GOOGLE_WEB_APP_URL + "?t=" + Date.now());
     const result = await res.json();
 
     if (result && Array.isArray(result.data)) {
       let remoteData = result.data;
 
-      // Update Database Lokal (HP)
+      // Bersihkan dan perbarui IndexedDB lokal dengan data dari server
       if (db) {
         let tx = db.transaction("wo", "readwrite");
         let store = tx.objectStore("wo");
+        store.clear(); 
         remoteData.forEach(item => store.put(item));
       }
 
       cache = remoteData.sort((a, b) => b.id - a.id);
       updateStats(cache);
       renderTable(cache);
+      generateNoWO();
     } else {
       renderTable([]);
     }
   } catch (err) {
-    console.warn("Gagal mengambil data dari Google Sheets:", err);
-    renderTable([]);
+    console.warn("Gagal mengambil data dari Google Sheets, beralih ke cache lokal:", err);
+    loadDataLocal();
   }
 }
 
@@ -1022,16 +1017,18 @@ async function saveData() {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(rec)
-        }).catch(e => console.warn("Sync Google Sheets gagal:", e));
+        })
+        .then(() => {
+          setTimeout(fetchFromGoogleSheets, 800);
+        })
+        .catch(e => console.warn("Sync Google Sheets gagal:", e));
       }
 
-      // SIMPAN COUNTER BERDASARKAN TANGGAL YANG DIPILIH PADA FORM
       if (!editId) {
         let selectedDate = el("woDate").value || today();
         let dateFormatted = selectedDate.replaceAll("-", "");
         let key = "counter_" + dateFormatted;
         
-        // Ambil nomor urut dari No WO yang baru saja disimpan
         let currentWoNo = el("woNo").value;
         let seqParts = currentWoNo.split("-");
         let currentSeq = parseInt(seqParts[2], 10) || 1;
@@ -1042,7 +1039,6 @@ async function saveData() {
 
       alert(editId ? "Data berhasil diupdate!" : "Data berhasil disimpan & terhubung!");
       resetForm();
-      loadData();
     };
 
   } catch (err) {
@@ -1074,7 +1070,7 @@ function resetForm() {
 
 function debounceSearch() {
   clearTimeout(timerSearch);
-  timerSearch = setTimeout(loadData, 250);
+  timerSearch = setTimeout(loadDataLocal, 250);
 }
 
 function updateStats(data) {
@@ -1089,24 +1085,14 @@ function updateStats(data) {
   el("stat-downtime").innerText = totalDowntime + "m";
 }
 
-/* FUNGSI LOAD DATA (DIPERBARUI DENGAN AUTOFETCH) */
-function loadData(autoFetchOnline = false) {
-  if (!db) {
-    fetchFromGoogleSheets();
-    return;
-  }
+/* FUNGSI FILTER DATA LOKAL */
+function loadDataLocal() {
+  if (!db) return;
   let tx = db.transaction("wo", "readonly");
   let req = tx.objectStore("wo").getAll();
 
   req.onsuccess = () => {
     let data = req.result.sort((a, b) => b.id - a.id);
-    
-    // Jika data di HP masih kosong, otomatis tarik dari Google Sheets
-    if (data.length === 0 && autoFetchOnline) {
-      fetchFromGoogleSheets();
-      return;
-    }
-
     let q = el("search").value.toLowerCase().trim();
     let d = el("searchDate").value;
 
@@ -1180,18 +1166,17 @@ function renderTable(data) {
 
   el("tbody").innerHTML = html;
 }
+
 function zoomImg(src) {
   el("zoomImg").src = src || PLACEHOLDER_SVG;
   el("imgModal").style.display = "flex";
 }
  
 function formatImgUrl(url) {
-  if (!url || url === "-" || url === "[Error Simpan Drive]") return PLACEHOLDER_SVG;
+  if (!url || url === "-" || url === "[Error Simpan Drive]" || url.indexOf("[Error") === 0) return PLACEHOLDER_SVG;
   
-  // Jika berupa Base64, kembalikan langsung
-  if (url.startsWith("data:image")) return url;
+  if (typeof url === "string" && url.startsWith("data:image")) return url;
   
-  // Ekstrak FILE_ID jika URL berupa link Drive lama / lh3
   let fileId = "";
   if (url.includes("id=")) {
     let match = url.match(/id=([a-zA-Z0-9_-]+)/);
@@ -1242,11 +1227,13 @@ function editData(id) {
     pasteAfterData = d.after || "";
 
     if (d.before) {
-      el("pasteBefore").innerHTML = `<div class="thumb-wrapper"><img src="${d.before}" class="thumb" alt="Before" onclick="zoomImg('${d.before}')" onerror="this.onerror=null;this.src='${PLACEHOLDER_SVG}';"><button type="button" class="btn-remove-img" onclick="removeImage('before')" title="Hapus Gambar">✕</button></div>`;
+      let bUrl = formatImgUrl(d.before);
+      el("pasteBefore").innerHTML = `<div class="thumb-wrapper"><img src="${bUrl}" class="thumb" alt="Before" onclick="zoomImg('${bUrl}')" onerror="this.onerror=null;this.src='${PLACEHOLDER_SVG}';"><button type="button" class="btn-remove-img" onclick="removeImage('before')" title="Hapus Gambar">✕</button></div>`;
     } else el("pasteBefore").innerHTML = "Klik disini lalu Ctrl+V gambar BEFORE";
 
     if (d.after) {
-      el("pasteAfter").innerHTML = `<div class="thumb-wrapper"><img src="${d.after}" class="thumb" alt="After" onclick="zoomImg('${d.after}')" onerror="this.onerror=null;this.src='${PLACEHOLDER_SVG}';"><button type="button" class="btn-remove-img" onclick="removeImage('after')" title="Hapus Gambar">✕</button></div>`;
+      let aUrl = formatImgUrl(d.after);
+      el("pasteAfter").innerHTML = `<div class="thumb-wrapper"><img src="${aUrl}" class="thumb" alt="After" onclick="zoomImg('${aUrl}')" onerror="this.onerror=null;this.src='${PLACEHOLDER_SVG}';"><button type="button" class="btn-remove-img" onclick="removeImage('after')" title="Hapus Gambar">✕</button></div>`;
     } else el("pasteAfter").innerHTML = "Klik disini lalu Ctrl+V gambar AFTER";
 
     showSection("input");
@@ -1257,7 +1244,7 @@ function hapusData(id) {
   if (!confirm("Yakin ingin menghapus data laporan ini?")) return;
   let tx = db.transaction("wo", "readwrite");
   tx.objectStore("wo").delete(id);
-  tx.oncomplete = () => loadData();
+  tx.oncomplete = () => loadDataLocal();
 }
 
 function exportExcel() {
@@ -1293,9 +1280,10 @@ async function exportPDF() {
 
   async function getBase64FromSrc(src) {
     if (!src || src === "-") return null;
-    if (src.startsWith("data:image")) return src;
+    let formattedSrc = formatImgUrl(src);
+    if (formattedSrc.startsWith("data:image")) return formattedSrc;
     try {
-      let res = await fetch(src); let blob = await res.blob();
+      let res = await fetch(formattedSrc); let blob = await res.blob();
       return new Promise((resolve) => {
         let reader = new FileReader();
         reader.onloadend = () => resolve(reader.result);
