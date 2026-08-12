@@ -1063,7 +1063,13 @@ async function saveData() {
         localStorage.setItem(key, Math.max(existingCounter, currentSeq));
       }
 
-      alert(editId ? "Data berhasil diupdate!" : "Data berhasil disimpan & terhubung!");
+      // NOTIFIKASI BARU YANG LEBIH INTERAKTIF
+      if (editId) {
+        alert("✨ Laporan " + rec.woNo + " berhasil diperbarui!");
+      } else {
+        alert("🚀 Laporan " + rec.woNo + " berhasil disimpan & tersinkronisasi!");
+      }
+
       resetForm();
     };
 
@@ -1269,10 +1275,22 @@ function editData(id) {
 }
 
 function hapusData(id) {
-  if (!confirm("Yakin ingin menghapus data laporan ini?")) return;
+  let targetData = cache.find(x => x.id === id);
+  let woName = targetData ? targetData.woNo : "ini";
+
+  if (!confirm("⚠️ Apakah Anda yakin ingin menghapus laporan " + woName + "?")) return;
+
   let tx = db.transaction("wo", "readwrite");
   tx.objectStore("wo").delete(id);
-  tx.oncomplete = () => loadDataLocal();
+  
+  tx.oncomplete = () => {
+    alert("🗑️ Laporan " + woName + " telah berhasil dihapus!");
+    fetchFromGoogleSheets();
+  };
+
+  tx.onerror = () => {
+    alert("❌ Gagal menghapus data laporan!");
+  };
 }
 
 function exportExcel() {
