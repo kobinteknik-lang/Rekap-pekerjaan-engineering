@@ -795,6 +795,32 @@ function hitungDurasi() {
   el("durasi").value = e - s;
 }
 
+/* FUNGSI PEMBERSIH FORMAT JAM (PENCEGAH FORMAT ISO/1899) */
+function cleanTimeString(timeVal) {
+  if (!timeVal || timeVal === "-") return "00:00";
+  let str = String(timeVal).trim();
+
+  // Jika berupa string ISO dari Google Sheets (misal: 1899-12-29T21:32:48.000Z)
+  if (str.includes("T") && (str.includes("Z") || str.includes("."))) {
+    try {
+      let d = new Date(str);
+      let h = String(d.getHours()).padStart(2, "0");
+      let m = String(d.getMinutes()).padStart(2, "0");
+      return `${h}:${m}`;
+    } catch (e) {}
+  }
+
+  // Jika berupa format HH:mm:ss atau HH:mm
+  if (str.includes(":")) {
+    let parts = str.split(":");
+    let h = String(parts[0]).padStart(2, "0");
+    let m = String(parts[1]).padStart(2, "0");
+    return `${h}:${m}`;
+  }
+
+  return str;
+}
+
 /* FUNGSI GENERATE NO WO SINKRON */
 function generateNoWO() {
   if (editId) return;
@@ -1126,6 +1152,8 @@ function renderTable(data) {
   data.forEach((x, i) => {
     let beforeUrl = formatImgUrl(x.before);
     let afterUrl = formatImgUrl(x.after);
+    let cleanStart = cleanTimeString(x.start);
+    let cleanEnd = cleanTimeString(x.end);
 
     html += `
 <tr>
@@ -1138,8 +1166,8 @@ function renderTable(data) {
   <td class="col-pic">${escapeHtml(x.pic)}</td>
   <td class="col-spv">${escapeHtml(x.spv)}</td>
   <td class="col-type">${x.type === "planned" ? `<span class="badge">Planned</span>` : `<span class="badge red">Unplanned</span>`}</td>
-  <td class="col-time">${escapeHtml(x.start)}</td>
-  <td class="col-time">${escapeHtml(x.end)}</td>
+  <td class="col-time">${escapeHtml(cleanStart)}</td>
+  <td class="col-time">${escapeHtml(cleanEnd)}</td>
   <td class="col-dur">${escapeHtml(x.durasi)} m</td>
   <td class="col-desc">${escapeHtml(x.work)}</td>
   <td class="col-desc">${escapeHtml(x.cause)}</td>
@@ -1210,8 +1238,8 @@ function editData(id) {
     el("spv").value = d.spv || "";
     el("type").value = d.type || "planned";
 
-    let st = (d.start || "00:00").split(":");
-    let en = (d.end || "00:00").split(":");
+    let st = cleanTimeString(d.start).split(":");
+    let en = cleanTimeString(d.end).split(":");
     el("startHour").value = st[0] || "00";
     el("startMinute").value = st[1] || "00";
     el("endHour").value = en[0] || "00";
@@ -1254,7 +1282,7 @@ function exportExcel() {
     let afterVal = x.after ? (x.after.startsWith("http") ? x.after : "Ada Gambar (Base64)") : "-";
     return {
       "No": idx + 1, "No WO": x.woNo, "Tanggal": x.woDate, "Mesin": x.machine, "Line": x.line,
-      "Part": x.part, "PIC": x.pic, "SPV": x.spv, "Type": x.type, "Jam Mulai": x.start, "Jam Selesai": x.end,
+      "Part": x.part, "PIC": x.pic, "SPV": x.spv, "Type": x.type, "Jam Mulai": cleanTimeString(x.start), "Jam Selesai": cleanTimeString(x.end),
       "Durasi (menit)": x.durasi, "Pekerjaan": x.work, "Penyebab": x.cause, "Manfaat": x.benefit,
       "Preventive": x.preventive, "Gambar Before": beforeVal, "Gambar After": afterVal
     };
@@ -1313,7 +1341,7 @@ async function exportPDF() {
     doc.autoTable({
       startY: 25,
       head: [["Tanggal", "Mesin", "Line", "Part", "PIC", "SPV", "Type", "Start", "End", "Durasi", "Pekerjaan", "Penyebab", "Manfaat", "Preventive"]],
-      body: [[d.woDate||"-", d.machine||"-", d.line||"-", d.part||"-", d.pic||"-", d.spv||"-", d.type||"-", d.start||"-", d.end||"-", (d.durasi||"0")+"m", d.work||"-", d.cause||"-", d.benefit||"-", d.preventive||"-"]],
+      body: [[d.woDate||"-", d.machine||"-", d.line||"-", d.part||"-", d.pic||"-", d.spv||"-", d.type||"-", cleanTimeString(d.start), cleanTimeString(d.end), (d.durasi||"0")+"m", d.work||"-", d.cause||"-", d.benefit||"-", d.preventive||"-"]],
       styles: { fontSize: 7, overflow: "linebreak", cellWidth: "wrap", valign: "top", lineWidth: 0.2 },
       headStyles: { fillColor: [36, 52, 71], textColor: 255, fontStyle: "bold" },
       columnStyles: { 10: { cellWidth: 35 }, 11: { cellWidth: 30 }, 12: { cellWidth: 30 }, 13: { cellWidth: 30 } }
