@@ -145,7 +145,7 @@
       font-size: 12.5px;
     }
 
-    /* FIX DASHBOARD STATS CARD (WARNA CERAH & KONTRAS) */
+    /* DASHBOARD STATS CARD */
     .stats-bar {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -210,14 +210,8 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     }
 
-    /* PENTING: PENGATURAN TAMPILAN SECTION */
-    .section {
-      display: none !important;
-    }
-
-    .section.active {
-      display: block !important;
-    }
+    .section { display: none !important; }
+    .section.active { display: block !important; }
 
     .section-header {
       font-size: 15px;
@@ -231,7 +225,7 @@
       padding-bottom: 8px;
     }
 
-    /* FIX FORM GRID LAYOUT */
+    /* FORM GRID LAYOUT */
     .form-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -402,9 +396,7 @@
     .col-img { width: 75px; text-align: center; }
     .col-act { width: 95px; text-align: center; }
 
-    table.auto-fit-table tbody tr:hover {
-      background-color: var(--table-row-hover);
-    }
+    table.auto-fit-table tbody tr:hover { background-color: var(--table-row-hover); }
 
     .thumb {
       width: 55px;
@@ -428,12 +420,7 @@
 
     .badge.red { background: #dc2626; }
 
-    .action-btn-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
+    .action-btn-group { display: flex; flex-direction: column; gap: 4px; }
     .btn-tbl {
       padding: 5px 10px;
       border-radius: 6px;
@@ -442,7 +429,6 @@
       border: none;
       cursor: pointer;
     }
-
     .btn-edit { background: rgba(37, 99, 235, 0.12); color: #2563eb; }
     .btn-del { background: rgba(220, 38, 38, 0.12); color: #dc2626; }
 
@@ -488,13 +474,12 @@
 
 <div class="container">
 
-  <!-- HEADER & NAVIGATION -->
+  <!-- HEADER -->
   <div class="header-card">
     <div class="header-title">
       <h1>⚙️ DAILY REPORT ENGINEERING</h1>
       <p>Dokumen formal digital mencatat seluruh aktivitas teknis, pemeliharaan (maintenance), penggunaan material, dan kondisi utilitas harian.</p>
     </div>
-
     <div style="display: flex; align-items: center; gap: 10px;">
       <div class="nav-pills">
         <button type="button" class="nav-btn active" id="nav-input" onclick="showSection('input')">📝 INPUT</button>
@@ -504,7 +489,7 @@
     </div>
   </div>
 
-  <!-- STATS SUMMARY BAR -->
+  <!-- STATS -->
   <div class="stats-bar">
     <div class="stat-card blue">
       <div class="stat-icon">📊</div>
@@ -545,12 +530,10 @@
         <label for="woNo">No WO</label>
         <input type="text" id="woNo" readonly placeholder="Auto Generated">
       </div>
-
       <div class="form-group">
         <label for="woDate">Tanggal</label>
         <input type="date" id="woDate">
       </div>
-
       <div class="form-group">
         <label for="machine">Mesin</label>
         <input list="machineList" id="machine" placeholder="Pilih / Ketik Mesin">
@@ -571,7 +554,6 @@
           <option value="PACKING"></option>
         </datalist>
       </div>
-
       <div class="form-group">
         <label for="line">Line</label>
         <select id="line">
@@ -592,17 +574,14 @@
         <label for="part">Part / Komponen</label>
         <input type="text" id="part" placeholder="Nama Part / Komponen">
       </div>
-
       <div class="form-group">
         <label for="pic">PIC (Teknisi)</label>
         <input type="text" id="pic" placeholder="Nama Teknisi">
       </div>
-
       <div class="form-group">
         <label for="spv">SPV (Supervisor)</label>
         <input type="text" id="spv" placeholder="Nama Supervisor">
       </div>
-
       <div class="form-group">
         <label for="type">Type Order</label>
         <select id="type">
@@ -620,7 +599,6 @@
           <select id="startMinute" aria-label="Menit Mulai"></select>
         </div>
       </div>
-
       <div class="form-group">
         <label>Jam Selesai</label>
         <div style="display: flex; gap: 6px;">
@@ -628,7 +606,6 @@
           <select id="endMinute" aria-label="Menit Selesai"></select>
         </div>
       </div>
-
       <div class="form-group">
         <label for="durasi">Durasi (menit)</label>
         <input type="text" id="durasi" readonly placeholder="Auto Calculate">
@@ -639,17 +616,14 @@
       <label for="work">Deskripsi Pekerjaan</label>
       <textarea id="work" placeholder="Deskripsi pekerjaan teknis yang dilakukan..."></textarea>
     </div>
-
     <div class="form-group" style="margin-top: 8px;">
       <label for="cause">Penyebab Kerusakan/Kendala</label>
       <textarea id="cause" placeholder="Penyebab utama timbulnya kendala/kerusakan..."></textarea>
     </div>
-
     <div class="form-group" style="margin-top: 8px;">
       <label for="benefit">Manfaat Penanganan</label>
       <textarea id="benefit" placeholder="Manfaat & hasil setelah penanganan..."></textarea>
     </div>
-
     <div class="form-group" style="margin-top: 8px;">
       <label for="preventive">Tindakan Preventive</label>
       <textarea id="preventive" placeholder="Tindakan pencegahan & inspeksi berkala ke depan..."></textarea>
@@ -663,7 +637,6 @@
           Klik disini lalu Ctrl+V gambar BEFORE
         </div>
       </div>
-
       <div class="form-group">
         <label for="after">Gambar After</label>
         <input type="file" id="after" accept="image/*" onchange="handleFileSelect('after')">
@@ -677,13 +650,11 @@
       <button type="button" id="btnSave" class="btn-main btn-primary" onclick="saveData()">💾 SIMPAN & SYNC</button>
       <button type="button" class="btn-main btn-secondary" onclick="resetForm()">♻ RESET FORM</button>
     </div>
-
   </div>
 
   <!-- SECTION: HISTORY TABLE -->
   <div id="history" class="card section">
     <div class="section-header">📊 RIWAYAT LAPORAN MAINTENANCE</div>
-
     <div class="filter-bar">
       <input type="text" id="search" placeholder="🔍 Cari No WO / Mesin / PIC / Pekerjaan..." oninput="debounceSearch()">
       <input type="date" id="searchDate" onchange="loadData()" style="max-width: 160px;">
@@ -691,7 +662,6 @@
       <button type="button" class="btn-tool" onclick="exportExcel()">📗 Export Excel</button>
       <button type="button" class="btn-tool" onclick="exportPDF()">📄 Export PDF</button>
     </div>
-
     <div class="table-container">
       <table class="auto-fit-table">
         <thead>
@@ -720,7 +690,6 @@
         <tbody id="tbody"></tbody>
       </table>
     </div>
-
   </div>
 
 </div>
@@ -731,7 +700,7 @@
 </div>
 
 <script>
-/* KONFIGURASI INTEGRASI GOOGLE SHEETS */
+/* KONFIGURASI INTEGRASI GOOGLE SHEETS (JANGAN LUPA SESUAIKAN URL DEPLOY ANDA) */
 const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyNNGB8HtCYF0cPsa4FYgAsYzK-DuD8giFtpPj8u5HUHPj2giqU-r-8z0PslzMGVeg/exec";
 
 const PLACEHOLDER_SVG = "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2270%22%20height%3D%2270%22%20viewBox%3D%220%200%2070%2070%22%3E%3Crect%20fill%3D%22%23e2e8f0%22%20width%3D%2270%22%20height%3D%2270%22%2F%3E%3Ctext%20fill%3D%22%2394a3b8%22%20font-family%3D%22sans-serif%22%20font-size%3D%2210%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20dy%3D%22.3em%22%3ENo%20Image%3C%2Ftext%3E%3C%2Fsvg%3E";
@@ -764,6 +733,8 @@ request.onsuccess = e => {
 
 request.onerror = e => {
   console.error("Gagal membuka IndexedDB:", e.target.error);
+  // FALLBACK UNTUK HP: JIKA DATABASE LOKAL DIBLOKIR BROWSER, LANGSUNG TARIK DARI GOOGLE SHEETS
+  fetchFromGoogleSheets();
 };
 
 /* INITIALIZATION */
@@ -773,7 +744,9 @@ function init() {
   generateNoWO();
   setupPaste("pasteBefore", "before");
   setupPaste("pasteAfter", "after");
-  loadData();
+  
+  // TARIK DATA (PARAMETER 'TRUE' UNTUK OTOMATIS AMBIL DARI ONLINE JIKA HP KOSONG)
+  loadData(true);
 
   if (localStorage.getItem("theme") === "dark") {
     document.body.classList.add("dark");
@@ -788,45 +761,24 @@ function today() {
   return `${year}-${month}-${day}`;
 }
 
-/* FIX UTAMA NAVIGATION: PERPINDAHAN SECTION DIJAMIN AKTIF LENGKAP */
 function showSection(id) {
-  const sections = document.querySelectorAll(".section");
-  sections.forEach(s => {
-    s.classList.remove("active");
-  });
-
-  const navBtns = document.querySelectorAll(".nav-btn");
-  navBtns.forEach(b => {
-    b.classList.remove("active");
-  });
-
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
   const targetSection = el(id);
-  if (targetSection) {
-    targetSection.classList.add("active");
-  }
-
+  if (targetSection) targetSection.classList.add("active");
   const targetNavBtn = el("nav-" + id);
-  if (targetNavBtn) {
-    targetNavBtn.classList.add("active");
-  }
+  if (targetNavBtn) targetNavBtn.classList.add("active");
 }
 
 function toggleDark() {
   document.body.classList.toggle("dark");
-  const isDark = document.body.classList.contains("dark");
-  localStorage.setItem("theme", isDark ? "dark" : "light");
+  localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
 }
 
 function fillTime() {
   let hoursHTML = "", minutesHTML = "";
-  for (let i = 0; i < 24; i++) {
-    let h = String(i).padStart(2, "0");
-    hoursHTML += `<option value="${h}">${h}</option>`;
-  }
-  for (let i = 0; i < 60; i++) {
-    let m = String(i).padStart(2, "0");
-    minutesHTML += `<option value="${m}">${m}</option>`;
-  }
+  for (let i = 0; i < 24; i++) hoursHTML += `<option value="${String(i).padStart(2, "0")}">${String(i).padStart(2, "0")}</option>`;
+  for (let i = 0; i < 60; i++) minutesHTML += `<option value="${String(i).padStart(2, "0")}">${String(i).padStart(2, "0")}</option>`;
 
   el("startHour").innerHTML = hoursHTML;
   el("endHour").innerHTML = hoursHTML;
@@ -856,56 +808,37 @@ function generateNoWO() {
 function compressImage(fileOrBase64, maxSide = 800, quality = 0.7) {
   return new Promise((resolve) => {
     if (!fileOrBase64) return resolve("");
-
-    if (typeof fileOrBase64 === "string" && fileOrBase64.startsWith("http")) {
-      return resolve(fileOrBase64);
-    }
+    if (typeof fileOrBase64 === "string" && fileOrBase64.startsWith("http")) return resolve(fileOrBase64);
 
     const img = new Image();
     img.crossOrigin = "anonymous";
-
     img.onload = () => {
-      let w = img.width;
-      let h = img.height;
-
+      let w = img.width, h = img.height;
       if (w > maxSide || h > maxSide) {
-        if (w > h) {
-          h = Math.round((h * maxSide) / w);
-          w = maxSide;
-        } else {
-          w = Math.round((w * maxSide) / h);
-          h = maxSide;
-        }
+        if (w > h) { h = Math.round((h * maxSide) / w); w = maxSide; } 
+        else { w = Math.round((w * maxSide) / h); h = maxSide; }
       }
-
       const canvas = document.createElement("canvas");
-      canvas.width = w;
-      canvas.height = h;
+      canvas.width = w; canvas.height = h;
       const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0, w, h);
-
       resolve(canvas.toDataURL("image/jpeg", quality));
     };
-
     img.onerror = () => resolve("");
-
-    if (typeof fileOrBase64 === "string") {
-      img.src = fileOrBase64;
-    } else if (fileOrBase64 instanceof File) {
+    
+    if (typeof fileOrBase64 === "string") img.src = fileOrBase64;
+    else if (fileOrBase64 instanceof File) {
       const reader = new FileReader();
       reader.onload = e => img.src = e.target.result;
       reader.onerror = () => resolve("");
       reader.readAsDataURL(fileOrBase64);
-    } else {
-      resolve("");
-    }
+    } else resolve("");
   });
 }
 
 async function handleFileSelect(type) {
   const fileInput = el(type);
   if (!fileInput || !fileInput.files[0]) return;
-
   const compressed = await compressImage(fileInput.files[0]);
   const boxId = type === "before" ? "pasteBefore" : "pasteAfter";
 
@@ -934,40 +867,30 @@ function removeImage(type) {
 function setupPaste(id, target) {
   const pasteBox = el(id);
   if (!pasteBox) return;
-
   const setActiveTarget = () => {
     currentPasteTarget = target;
     el("pasteBefore").classList.toggle("active-target", target === "before");
     el("pasteAfter").classList.toggle("active-target", target === "after");
   };
-
   pasteBox.addEventListener("click", setActiveTarget);
   pasteBox.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      setActiveTarget();
-    }
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setActiveTarget(); }
   });
 }
 
 document.addEventListener("paste", e => {
   const clipboardData = e.clipboardData || window.clipboardData;
   if (!clipboardData || !clipboardData.items) return;
-
   const items = clipboardData.items;
   for (let i = 0; i < items.length; i++) {
     if (items[i].type.indexOf("image") !== -1) {
       e.preventDefault();
-      const file = items[i].getAsFile();
-
-      compressImage(file).then(compressed => {
+      compressImage(items[i].getAsFile()).then(compressed => {
         if (!compressed) return;
         const targetBoxId = (currentPasteTarget === "before") ? "pasteBefore" : "pasteAfter";
         const pasteBox = el(targetBoxId);
-
         if (currentPasteTarget === "before") pasteBeforeData = compressed;
         else pasteAfterData = compressed;
-
         if (pasteBox) {
           pasteBox.innerHTML = `
             <div class="thumb-wrapper">
@@ -981,15 +904,42 @@ document.addEventListener("paste", e => {
   }
 });
 
+/* FUNGSI BARU: MENARIK DATA DARI GOOGLE SHEETS JIKA HP KOSONG */
+async function fetchFromGoogleSheets() {
+  if (!GOOGLE_WEB_APP_URL) return;
+
+  el("tbody").innerHTML = `<tr><td colspan="19" style="text-align:center; padding: 20px;">⏳ Mengambil data dari server Google Sheets...</td></tr>`;
+
+  try {
+    const res = await fetch(GOOGLE_WEB_APP_URL);
+    const result = await res.json();
+
+    if (result && Array.isArray(result.data)) {
+      let remoteData = result.data;
+
+      // Update Database Lokal (HP)
+      if (db) {
+        let tx = db.transaction("wo", "readwrite");
+        let store = tx.objectStore("wo");
+        remoteData.forEach(item => store.put(item));
+      }
+
+      cache = remoteData.sort((a, b) => b.id - a.id);
+      updateStats(cache);
+      renderTable(cache);
+    } else {
+      renderTable([]);
+    }
+  } catch (err) {
+    console.warn("Gagal mengambil data dari Google Sheets:", err);
+    renderTable([]);
+  }
+}
+
 async function saveData() {
   let machineVal = el("machine").value.trim();
   let lineVal = el("line").value;
-
-  if (machineVal !== "-" && !lineVal) {
-    alert("Silakan pilih Line terlebih dahulu!");
-    el("line").focus();
-    return;
-  }
+  if (machineVal !== "-" && !lineVal) { alert("Silakan pilih Line terlebih dahulu!"); el("line").focus(); return; }
 
   const btnSave = el("btnSave");
   btnSave.disabled = true;
@@ -1067,29 +1017,19 @@ async function saveData() {
 
 function resetForm() {
   editId = null;
-  document.querySelectorAll("input, textarea").forEach(x => {
-    if (x.id !== "woNo" && x.type !== "date") x.value = "";
-  });
-
+  document.querySelectorAll("input, textarea").forEach(x => { if (x.id !== "woNo" && x.type !== "date") x.value = ""; });
   if (el("before")) el("before").value = "";
   if (el("after")) el("after").value = "";
-
   el("woDate").value = today();
   el("line").value = "";
-
-  ["startHour", "startMinute", "endHour", "endMinute"].forEach(id => {
-    if (el(id)) el(id).value = "00";
-  });
-
+  ["startHour", "startMinute", "endHour", "endMinute"].forEach(id => { if (el(id)) el(id).value = "00"; });
   el("durasi").value = "";
   pasteBeforeData = "";
   pasteAfterData = "";
-
   el("pasteBefore").innerHTML = "Klik disini lalu Ctrl+V gambar BEFORE";
   el("pasteAfter").innerHTML = "Klik disini lalu Ctrl+V gambar AFTER";
   el("pasteBefore").classList.remove("active-target");
   el("pasteAfter").classList.remove("active-target");
-
   generateNoWO();
 }
 
@@ -1099,38 +1039,41 @@ function debounceSearch() {
 }
 
 function updateStats(data) {
-  let plannedCount = 0;
-  let unplannedCount = 0;
-  let totalDowntime = 0;
-
+  let plannedCount = 0, unplannedCount = 0, totalDowntime = 0;
   data.forEach(item => {
-    if (item.type === "planned") plannedCount++;
-    else unplannedCount++;
-
+    if (item.type === "planned") plannedCount++; else unplannedCount++;
     totalDowntime += (+item.durasi || 0);
   });
-
   el("stat-total").innerText = data.length;
   el("stat-planned").innerText = plannedCount;
   el("stat-unplanned").innerText = unplannedCount;
   el("stat-downtime").innerText = totalDowntime + "m";
 }
 
-function loadData() {
-  if (!db) return;
+/* FUNGSI LOAD DATA (DIPERBARUI DENGAN AUTOFETCH) */
+function loadData(autoFetchOnline = false) {
+  if (!db) {
+    fetchFromGoogleSheets();
+    return;
+  }
   let tx = db.transaction("wo", "readonly");
   let req = tx.objectStore("wo").getAll();
 
   req.onsuccess = () => {
     let data = req.result.sort((a, b) => b.id - a.id);
+    
+    // Jika data di HP masih kosong, otomatis tarik dari Google Sheets
+    if (data.length === 0 && autoFetchOnline) {
+      fetchFromGoogleSheets();
+      return;
+    }
+
     let q = el("search").value.toLowerCase().trim();
     let d = el("searchDate").value;
 
     if (q) {
       data = data.filter(x => {
-        let textContent = [
-          x.woNo, x.machine, x.line, x.part, x.pic, x.spv, x.work, x.cause, x.benefit, x.preventive
-        ].map(item => item || "").join(" ").toLowerCase();
+        let textContent = [x.woNo, x.machine, x.line, x.part, x.pic, x.spv, x.work, x.cause, x.benefit, x.preventive].map(item => item || "").join(" ").toLowerCase();
         return textContent.includes(q);
       });
     }
@@ -1145,12 +1088,7 @@ function loadData() {
 
 function escapeHtml(str) {
   if (!str) return '';
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+  return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
 function renderTable(data) {
@@ -1171,11 +1109,7 @@ function renderTable(data) {
   <td class="col-part">${escapeHtml(x.part)}</td>
   <td class="col-pic">${escapeHtml(x.pic)}</td>
   <td class="col-spv">${escapeHtml(x.spv)}</td>
-  <td class="col-type">
-    ${x.type === "planned"
-      ? `<span class="badge">Planned</span>`
-      : `<span class="badge red">Unplanned</span>`}
-  </td>
+  <td class="col-type">${x.type === "planned" ? `<span class="badge">Planned</span>` : `<span class="badge red">Unplanned</span>`}</td>
   <td class="col-time">${escapeHtml(x.start)}</td>
   <td class="col-time">${escapeHtml(x.end)}</td>
   <td class="col-dur">${escapeHtml(x.durasi)} m</td>
@@ -1183,26 +1117,16 @@ function renderTable(data) {
   <td class="col-desc">${escapeHtml(x.cause)}</td>
   <td class="col-desc">${escapeHtml(x.benefit)}</td>
   <td class="col-desc">${escapeHtml(x.preventive)}</td>
-  <td class="col-img">
-    ${x.before
-      ? `<img src="${x.before}" class="thumb" onclick="zoomImg('${x.before}')" onerror="this.onerror=null;this.src='${PLACEHOLDER_SVG}';" alt="Before">`
-      : '-'}
-  </td>
-  <td class="col-img">
-    ${x.after
-      ? `<img src="${x.after}" class="thumb" onclick="zoomImg('${x.after}')" onerror="this.onerror=null;this.src='${PLACEHOLDER_SVG}';" alt="After">`
-      : '-'}
-  </td>
+  <td class="col-img">${x.before ? `<img src="${x.before}" class="thumb" onclick="zoomImg('${x.before}')" onerror="this.onerror=null;this.src='${PLACEHOLDER_SVG}';" alt="Before">` : '-'}</td>
+  <td class="col-img">${x.after ? `<img src="${x.after}" class="thumb" onclick="zoomImg('${x.after}')" onerror="this.onerror=null;this.src='${PLACEHOLDER_SVG}';" alt="After">` : '-'}</td>
   <td class="col-act">
     <div class="action-btn-group">
       <button type="button" class="btn-tbl btn-edit" onclick="editData(${x.id})">Edit</button>
       <button type="button" class="btn-tbl btn-del" onclick="hapusData(${x.id})">Hapus</button>
     </div>
   </td>
-</tr>
-`;
+</tr>`;
   });
-
   el("tbody").innerHTML = html;
 }
 
@@ -1214,7 +1138,6 @@ function zoomImg(src) {
 function editData(id) {
   let tx = db.transaction("wo", "readonly");
   let req = tx.objectStore("wo").get(id);
-
   req.onsuccess = () => {
     let d = req.result;
     if (!d) return;
@@ -1231,12 +1154,10 @@ function editData(id) {
 
     let st = (d.start || "00:00").split(":");
     let en = (d.end || "00:00").split(":");
-
     el("startHour").value = st[0] || "00";
     el("startMinute").value = st[1] || "00";
     el("endHour").value = en[0] || "00";
     el("endMinute").value = en[1] || "00";
-
     hitungDurasi();
 
     el("work").value = d.work || "";
@@ -1248,24 +1169,12 @@ function editData(id) {
     pasteAfterData = d.after || "";
 
     if (d.before) {
-      el("pasteBefore").innerHTML = `
-        <div class="thumb-wrapper">
-          <img src="${d.before}" class="thumb" alt="Before" onclick="zoomImg('${d.before}')" onerror="this.onerror=null;this.src='${PLACEHOLDER_SVG}';">
-          <button type="button" class="btn-remove-img" onclick="removeImage('before')" title="Hapus Gambar">✕</button>
-        </div>`;
-    } else {
-      el("pasteBefore").innerHTML = "Klik disini lalu Ctrl+V gambar BEFORE";
-    }
+      el("pasteBefore").innerHTML = `<div class="thumb-wrapper"><img src="${d.before}" class="thumb" alt="Before" onclick="zoomImg('${d.before}')" onerror="this.onerror=null;this.src='${PLACEHOLDER_SVG}';"><button type="button" class="btn-remove-img" onclick="removeImage('before')" title="Hapus Gambar">✕</button></div>`;
+    } else el("pasteBefore").innerHTML = "Klik disini lalu Ctrl+V gambar BEFORE";
 
     if (d.after) {
-      el("pasteAfter").innerHTML = `
-        <div class="thumb-wrapper">
-          <img src="${d.after}" class="thumb" alt="After" onclick="zoomImg('${d.after}')" onerror="this.onerror=null;this.src='${PLACEHOLDER_SVG}';">
-          <button type="button" class="btn-remove-img" onclick="removeImage('after')" title="Hapus Gambar">✕</button>
-        </div>`;
-    } else {
-      el("pasteAfter").innerHTML = "Klik disini lalu Ctrl+V gambar AFTER";
-    }
+      el("pasteAfter").innerHTML = `<div class="thumb-wrapper"><img src="${d.after}" class="thumb" alt="After" onclick="zoomImg('${d.after}')" onerror="this.onerror=null;this.src='${PLACEHOLDER_SVG}';"><button type="button" class="btn-remove-img" onclick="removeImage('after')" title="Hapus Gambar">✕</button></div>`;
+    } else el("pasteAfter").innerHTML = "Klik disini lalu Ctrl+V gambar AFTER";
 
     showSection("input");
   };
@@ -1279,83 +1188,48 @@ function hapusData(id) {
 }
 
 function exportExcel() {
-  if (!cache || cache.length === 0) {
-    alert("Tidak ada data untuk diexport!");
-    return;
-  }
-
+  if (!cache || cache.length === 0) { alert("Tidak ada data untuk diexport!"); return; }
   let excelData = cache.map((x, idx) => {
     let beforeVal = x.before ? (x.before.startsWith("http") ? x.before : "Ada Gambar (Base64)") : "-";
     let afterVal = x.after ? (x.after.startsWith("http") ? x.after : "Ada Gambar (Base64)") : "-";
-
     return {
-      "No": idx + 1,
-      "No WO": x.woNo,
-      "Tanggal": x.woDate,
-      "Mesin": x.machine,
-      "Line": x.line,
-      "Part": x.part,
-      "PIC": x.pic,
-      "SPV": x.spv,
-      "Type": x.type,
-      "Jam Mulai": x.start,
-      "Jam Selesai": x.end,
-      "Durasi (menit)": x.durasi,
-      "Pekerjaan": x.work,
-      "Penyebab": x.cause,
-      "Manfaat": x.benefit,
-      "Preventive": x.preventive,
-      "Gambar Before": beforeVal,
-      "Gambar After": afterVal
+      "No": idx + 1, "No WO": x.woNo, "Tanggal": x.woDate, "Mesin": x.machine, "Line": x.line,
+      "Part": x.part, "PIC": x.pic, "SPV": x.spv, "Type": x.type, "Jam Mulai": x.start, "Jam Selesai": x.end,
+      "Durasi (menit)": x.durasi, "Pekerjaan": x.work, "Penyebab": x.cause, "Manfaat": x.benefit,
+      "Preventive": x.preventive, "Gambar Before": beforeVal, "Gambar After": afterVal
     };
   });
-
   let worksheet = XLSX.utils.json_to_sheet(excelData);
   let workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, "Daily Report");
   XLSX.writeFile(workbook, `Daily_Report_Maintenance_${today()}.xlsx`);
 }
 
-function cleanFileName(str) {
-  if (!str) return "";
-  return str.replace(/[^a-zA-Z0-9_\- ]/g, "").trim().replace(/\s+/g, "_").substring(0, 35);
-}
+function cleanFileName(str) { return (!str) ? "" : str.replace(/[^a-zA-Z0-9_\- ]/g, "").trim().replace(/\s+/g, "_").substring(0, 35); }
 
 async function exportPDF() {
   const { jsPDF } = window.jspdf;
   let doc = new jsPDF("l", "mm", "a4");
-
   let data = [...cache];
   let filterDate = el("searchDate").value;
 
-  if (filterDate) {
-    data = data.filter(x => x.woDate === filterDate);
-  }
-
-  if (data.length === 0) {
-    alert("Tidak ada data untuk diexport ke PDF!");
-    return;
-  }
+  if (filterDate) data = data.filter(x => x.woDate === filterDate);
+  if (data.length === 0) { alert("Tidak ada data untuk diexport ke PDF!"); return; }
 
   let reportId = "WO-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
 
   async function getBase64FromSrc(src) {
     if (!src || src === "-") return null;
     if (src.startsWith("data:image")) return src;
-
     try {
-      let res = await fetch(src);
-      let blob = await res.blob();
+      let res = await fetch(src); let blob = await res.blob();
       return new Promise((resolve) => {
         let reader = new FileReader();
         reader.onloadend = () => resolve(reader.result);
         reader.onerror = () => resolve(null);
         reader.readAsDataURL(blob);
       });
-    } catch (err) {
-      console.warn("Gagal mengonversi gambar URL ke Base64:", err);
-      return null;
-    }
+    } catch (err) { console.warn("Gagal mengonversi gambar URL ke Base64:", err); return null; }
   }
 
   function getImageDimensions(base64) {
@@ -1370,102 +1244,41 @@ async function exportPDF() {
   for (let i = 0; i < data.length; i++) {
     let d = data[i];
     let namaPekerjaanHeader = d.work ? "PEKERJAAN: " + d.work.toUpperCase() : "MAINTENANCE ORDER REPORT";
-
-    doc.setFontSize(11);
-    doc.setFont(undefined, 'bold');
-    doc.text(namaPekerjaanHeader, 14, 12);
-
-    doc.setFontSize(8);
-    doc.setFont(undefined, 'normal');
+    doc.setFontSize(11); doc.setFont(undefined, 'bold'); doc.text(namaPekerjaanHeader, 14, 12);
+    doc.setFontSize(8); doc.setFont(undefined, 'normal');
     doc.text("Report ID : " + reportId, 14, 17);
-    doc.text(
-      "Tanggal : " + (d.woDate || "-") +
-      "    |    Mesin : " + (d.machine || "-") +
-      "    |    Line : " + (d.line || "-") +
-      "    |    WO No : " + (d.woNo || "-") +
-      "    |    Pekerjaan : " + (d.work || "-"),
-      14, 22
-    );
+    doc.text(`Tanggal : ${d.woDate||"-"}    |    Mesin : ${d.machine||"-"}    |    Line : ${d.line||"-"}    |    WO No : ${d.woNo||"-"}    |    Pekerjaan : ${d.work||"-"}`, 14, 22);
 
     doc.autoTable({
       startY: 25,
-      head: [[
-        "Tanggal", "Mesin", "Line", "Part", "PIC", "SPV", "Type",
-        "Start", "End", "Durasi",
-        "Pekerjaan", "Penyebab", "Manfaat", "Preventive"
-      ]],
-      body: [[
-        d.woDate || "-", d.machine || "-", d.line || "-", d.part || "-",
-        d.pic || "-", d.spv || "-", d.type || "-", d.start || "-",
-        d.end || "-", (d.durasi || "0") + "m", d.work || "-", d.cause || "-",
-        d.benefit || "-", d.preventive || "-"
-      ]],
-      styles: {
-        fontSize: 7,
-        overflow: "linebreak",
-        cellWidth: "wrap",
-        valign: "top",
-        lineWidth: 0.2
-      },
-      headStyles: {
-        fillColor: [36, 52, 71],
-        textColor: 255,
-        fontStyle: "bold"
-      },
-      columnStyles: {
-        10: { cellWidth: 35 },
-        11: { cellWidth: 30 },
-        12: { cellWidth: 30 },
-        13: { cellWidth: 30 }
-      }
+      head: [["Tanggal", "Mesin", "Line", "Part", "PIC", "SPV", "Type", "Start", "End", "Durasi", "Pekerjaan", "Penyebab", "Manfaat", "Preventive"]],
+      body: [[d.woDate||"-", d.machine||"-", d.line||"-", d.part||"-", d.pic||"-", d.spv||"-", d.type||"-", d.start||"-", d.end||"-", (d.durasi||"0")+"m", d.work||"-", d.cause||"-", d.benefit||"-", d.preventive||"-"]],
+      styles: { fontSize: 7, overflow: "linebreak", cellWidth: "wrap", valign: "top", lineWidth: 0.2 },
+      headStyles: { fillColor: [36, 52, 71], textColor: 255, fontStyle: "bold" },
+      columnStyles: { 10: { cellWidth: 35 }, 11: { cellWidth: 30 }, 12: { cellWidth: 30 }, 13: { cellWidth: 30 } }
     });
 
     let y = doc.lastAutoTable.finalY + 8;
-
     async function drawImage(src, label, xBase) {
       if (!src || src === "-") return;
-
       let base64Img = await getBase64FromSrc(src);
       if (!base64Img) return;
-
-      doc.setFontSize(9);
-      doc.setFont(undefined, 'bold');
-      doc.text(label, xBase, y);
-
+      doc.setFontSize(9); doc.setFont(undefined, 'bold'); doc.text(label, xBase, y);
       let dim = await getImageDimensions(base64Img);
       if (!dim) return;
-
-      let maxW = 120, maxH = 80;
-      let ratio = dim.width / dim.height;
-      let w = maxW, h = w / ratio;
-
-      if (h > maxH) {
-        h = maxH;
-        w = h * ratio;
-      }
-
-      try {
-        let format = base64Img.includes("image/png") ? "PNG" : "JPEG";
-        doc.addImage(base64Img, format, xBase, y + 3, w, h);
-      } catch (err) {
-        console.warn("Gagal merender gambar ke PDF:", err);
-      }
+      let maxW = 120, maxH = 80, ratio = dim.width / dim.height, w = maxW, h = w / ratio;
+      if (h > maxH) { h = maxH; w = h * ratio; }
+      try { let format = base64Img.includes("image/png") ? "PNG" : "JPEG"; doc.addImage(base64Img, format, xBase, y + 3, w, h); } 
+      catch (err) { console.warn("Gagal merender gambar ke PDF:", err); }
     }
-
     await drawImage(d.before, "BEFORE DOCUMENTATION:", 14);
     await drawImage(d.after, "AFTER DOCUMENTATION:", 150);
-
     if (i < data.length - 1) doc.addPage();
   }
 
   let pdfName = "Maintenance_Report";
-  if (data.length === 1 && data[0].work) {
-    let cleanWork = cleanFileName(data[0].work);
-    if (cleanWork) pdfName = `Report_${cleanWork}`;
-  } else if (data.length > 1) {
-    pdfName = `Report_Multiple_Pekerjaan_${today()}`;
-  }
-
+  if (data.length === 1 && data[0].work) { let cleanWork = cleanFileName(data[0].work); if (cleanWork) pdfName = `Report_${cleanWork}`; } 
+  else if (data.length > 1) { pdfName = `Report_Multiple_Pekerjaan_${today()}`; }
   doc.save(`${pdfName}_${today()}.pdf`);
 }
 
