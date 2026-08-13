@@ -1322,31 +1322,118 @@ async function exportPDF() {
   if (filterDate) data = data.filter(x => x.woDate === filterDate);
   if (data.length === 0) { alert("Tidak ada data untuk diexport ke PDF!"); return; }
 
+  // Beri notifikasi ke user karena rendering gambar butuh waktu
+  let btnExport = document.querySelector("button[onclick='exportPDF()']");
+  if(btnExport) { btnExport.disabled = true; btnExport.innerText = "⏳ Exporting PDF..."; }
+
   let reportId = "WO-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
 
-  async function getBase64FromSrc(src) {
-    if (!src || src === "-") return null;
-    let formattedSrc = formatImgUrl(src);
-    if (formattedSrc.startsWith("data:image")) return formattedSrc;
-    try {
-      let res = await fetch(formattedSrc); let blob = await res.blob();
-      return new Promise((resolve) => {
-        let reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.onerror = () => resolve(null);
-        reader.readAsDataURL(blob);
-      });
-    } catch (err) { console.warn("Gagal mengonversi gambar URL ke Base64:", err); return null; }
+  for (let i = 0; i < data.length; i++) {
+    let d = data[i];
+    let namaPekerjaanHeader = d.work ? "PEKERJAAN: " + d.work.toUpperCase() : "MAINTENANCE ORDER REPORT";
+    doc.setFontSize(11); doc.setFont(undefined, 'bold'); doc.text(namaPekerjaanHeader, 14, 12);
+    doc.setFontSize(8); doc.setFont(undefined, 'normal');
+    doc.text("Report ID : " + reportId, 14, 17);
+    doc.text(`Tanggal : ${d.woDate||"-"}    |    Mesin : ${d.machine||"-"}    |    Line : ${d.line||"-"}    |    WO No : ${d.woNo||"-"}    |    Pekerjaan : ${d.work||"-"}`, 14, 22);
+
+    doc.autoTable({
+      startY: 25,
+      head: [["Tanggal", "Mesin", "Line", "Part", "PIC", "SPV", "Type", "Start", "End", "Durasi", "Pekerjaan", "Penyebab", "Manfaat", "Preventive"]],
+      body: [[d.woDate||"-", d.machine||"-", d.line||"-", d.part||"-", d.pic||"-", d.spv||"-", d.type||"-", cleanTimeString(d.start), cleanTimeString(d.end), (d.durasi||"0")+"m", d.work||"-", d.cause||"-", d.benefit||"-", d.preventive||"-"]],
+      styles: { fontSize: 7, overflow: "linebreak", cellWidth: "wrap", valign: "top", lineWidth: 0.2 },
+      headStyles: { fillColor: [36, 52, 71], textColor: 255, fontStyle: "bold" },
+      columnStyles: { 10: { cellWidth: 35 }, 11: { cellWidth: 30 }, 12: { cellWidth: 30 }, 13: { cellWidth: 30 } }
+    });
+
+    let y = doc.lastAutoTable.finalY + 8;
+
+    async function drawImage(src, label, xBase) {
+      if (!src || src === "-") return;
+      let base64Img = await getBase64FromSrc(src);
+      if (!base64Img) return;
+
+      doc.setFontSize(9); doc.setFont(undefined, 'bold'); 
+      doc.text(label, xBase, y);
+
+      let dim = await getImageDimensions(base64Img);
+      if (!dim) return;
+
+      let maxW = 120, maxH = 80, ratio = dim.width / dim.height, w = maxW, h = w / ratio;
+      if (h > maxH) { h = maxH; w = h * ratio; }
+
+      try {
+        let format = base64Img.includes("image/png") ? "PNG" : "JPEG";
+        doc.addImage(base64Img, format, xBase, y + 3, w, h);
+      } catch (err) {
+        console.warn("Gagal merender gambar ke PDF:", err);
+      }
+    }
+
+    await drawImage(d.before, "BEFORE DOCUMENTATION:", 14);
+    await drawImage(d.after, "AFTER DOCUMENTATION:", 150);
+
+    if (i < data.length - 1) doc.addPage();
   }
 
-  function getImageDimensions(base64) {
-    return new Promise(resolve => {
-      let img = new Image();
-      img.onload = () => resolve({ width: img.width, height: img.height });
-      img.onerror = () => resolve(null);
-      img.src = base64;
-    });
+  let pdfName = "Maintenance_Report";
+  if (data.length === 1 && data[0].work) { 
+    let cleanWork = cleanFileName(data[0].work); 
+    if (cleanWork) pdfName = `Report_${cleanWork}`; 
+  } else if (data.length > 1) { 
+    pdfName = `Report_Multiple_Pekerjaan_${today()}`; 
   }
+
+  doc.save(`${pdfName}_${today()}.pdf`);
+
+  if(btnExport) { btnExport.disabled = false; btnExport.innerText = "📄 Export PDF"; }
+}
+function getBase64FromSrc(src) {
+  return new Promise((resolve) => {
+    if (!src || src === "-" || src === PLACEHOLDER_SVG) return resolve(null);
+
+    let formattedSrc = formatImgUrl(src);
+
+    // 1. Jika sudah dalam format Base64 (Data URI)
+    if (typeof formattedSrc === "string" && formattedSrc.startsWith("data:image")) {
+      return resolve(formattedSrc);
+    }
+
+    // 2. Jika berupa URL (Google Drive / HTTP External) -> Konversi via Image & Canvas
+    const img = new Image();
+    img.crossOrigin = "Anonymous"; // Mencoba mengabaikan blokir CORS jika diizinkan server
+
+    img.onload = () => {
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        const dataURL = canvas.toDataURL("image/jpeg", 0.85);
+        resolve(dataURL);
+      } catch (err) {
+        console.warn("CORS Canvas error, gambar tidak dapat diproses:", err);
+        resolve(null);
+      }
+    };
+
+    img.onerror = () => {
+      console.warn("Gagal memuat gambar dari URL:", formattedSrc);
+      resolve(null);
+    };
+
+    img.src = formattedSrc;
+  });
+}
+
+function getImageDimensions(base64) {
+  return new Promise(resolve => {
+    let img = new Image();
+    img.onload = () => resolve({ width: img.width, height: img.height });
+    img.onerror = () => resolve(null);
+    img.src = base64;
+  });
+}
 
   for (let i = 0; i < data.length; i++) {
     let d = data[i];
