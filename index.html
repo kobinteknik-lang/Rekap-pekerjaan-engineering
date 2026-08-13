@@ -1196,11 +1196,9 @@ function zoomImg(src) {
   el("zoomImg").src = src || PLACEHOLDER_SVG;
   el("imgModal").style.display = "flex";
 }
- 
-function formatImgUrl(url) {
-  if (!url || url === "-" || url === "[Error Simpan Drive]" || url.indexOf("[Error") === 0) return PLACEHOLDER_SVG;
-  if (typeof url === "string" && url.startsWith("data:image")) return url;
-  
+
+function extractDriveId(url) {
+  if (!url || url === "-" || url.startsWith("data:image")) return "";
   let fileId = "";
   if (url.includes("id=")) {
     let match = url.match(/id=([a-zA-Z0-9_-]+)/);
@@ -1209,9 +1207,16 @@ function formatImgUrl(url) {
     let parts = url.split("/d/")[1];
     if (parts) fileId = parts.split("/")[0].split("?")[0];
   }
+  return fileId;
+}
 
+function formatImgUrl(url) {
+  if (!url || url === "-" || url === "[Error Simpan Drive]" || url.indexOf("[Error") === 0) return PLACEHOLDER_SVG;
+  if (typeof url === "string" && url.startsWith("data:image")) return url;
+  
+  let fileId = extractDriveId(url);
   if (fileId) {
-    return "https://drive.google.com/thumbnail?id=" + fileId + "&sz=w800";
+    return "https://lh3.googleusercontent.com/d/" + fileId;
   }
 
   return url;
@@ -1303,16 +1308,41 @@ function exportExcel() {
 
 function cleanFileName(str) { return (!str) ? "" : str.replace(/[^a-zA-Z0-9_\- ]/g, "").trim().replace(/\s+/g, "_").substring(0, 35); }
 
-function getBase64FromSrc(src) {
-  return new Promise((resolve) => {
-    if (!src || src === "-" || src === PLACEHOLDER_SVG) return resolve(null);
+/* FUNGSI KONVERSI GAMBAR KE BASE64 HANDAL (BYPASS CORS GOOGLE DRIVE VIA PROXY) */
+async function getBase64FromSrc(src) {
+  if (!src || src === "-" || src === PLACEHOLDER_SVG) return null;
 
-    let formattedSrc = formatImgUrl(src);
+  // 1. Jika sudah berupa Data URI (Base64)
+  if (typeof src === "string" && src.startsWith("data:image")) {
+    return src;
+  }
 
-    if (typeof formattedSrc === "string" && formattedSrc.startsWith("data:image")) {
-      return resolve(formattedSrc);
+  let driveId = extractDriveId(src);
+  let candidateUrls = [];
+
+  if (driveId) {
+    candidateUrls.push(`https://wsrv.nl/?url=https://drive.google.com/uc?id=${driveId}`);
+    candidateUrls.push(`https://lh3.googleusercontent.com/d/${driveId}`);
+    candidateUrls.push(`https://drive.google.com/thumbnail?id=${driveId}&sz=w800`);
+  } else {
+    candidateUrls.push(`https://wsrv.nl/?url=${encodeURIComponent(src)}`);
+    candidateUrls.push(src);
+  }
+
+  for (let url of candidateUrls) {
+    try {
+      let b64 = await loadImageAsBase64(url);
+      if (b64) return b64;
+    } catch (e) {
+      console.warn("Coba URL gagal:", url, e);
     }
+  }
 
+  return null;
+}
+
+function loadImageAsBase64(url) {
+  return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = "Anonymous";
 
@@ -1326,17 +1356,12 @@ function getBase64FromSrc(src) {
         const dataURL = canvas.toDataURL("image/jpeg", 0.85);
         resolve(dataURL);
       } catch (err) {
-        console.warn("CORS Canvas error, gambar tidak dapat diproses:", err);
         resolve(null);
       }
     };
 
-    img.onerror = () => {
-      console.warn("Gagal memuat gambar dari URL:", formattedSrc);
-      resolve(null);
-    };
-
-    img.src = formattedSrc;
+    img.onerror = () => resolve(null);
+    img.src = url;
   });
 }
 
@@ -1383,24 +1408,48 @@ async function exportPDF() {
     let y = doc.lastAutoTable.finalY + 8;
 
     async function drawImage(src, label, xBase) {
-      if (!src || src === "-") return;
-      let base64Img = await getBase64FromSrc(src);
-      if (!base64Img) return;
-
       doc.setFontSize(9); doc.setFont(undefined, 'bold'); 
       doc.text(label, xBase, y);
 
-      let dim = await getImageDimensions(base64Img);
-      if (!dim) return;
+      let boxW = 120, boxH = 80;
 
-      let maxW = 120, maxH = 80, ratio = dim.width / dim.height, w = maxW, h = w / ratio;
-      if (h > maxH) { h = maxH; w = h * ratio; }
+      if (!src || src === "-" || src === PLACEHOLDER_SVG) {
+        doc.setDrawColor(200, 200, 200);
+        doc.rect(xBase, y + 3, boxW, boxH);
+        doc.setFontSize(8); doc.setFont(undefined, 'italic');
+        doc.text("Perangkat / Foto Tidak Tersedia", xBase + 25, y + 42);
+        return;
+      }
+
+      let base64Img = await getBase64FromSrc(src);
+      
+      if (!base64Img) {
+        doc.setDrawColor(220, 38, 38);
+        doc.rect(xBase, y + 3, boxW, boxH);
+        doc.setFontSize(8); doc.setFont(undefined, 'normal'); doc.setTextColor(220, 38, 38);
+        doc.text("[Foto Tersedia di Google Drive]", xBase + 25, y + 38);
+        doc.text("(Akses CORS Gambar Diblokir Browser)", xBase + 22, y + 44);
+        doc.setTextColor(0, 0, 0);
+        return;
+      }
+
+      let dim = await getImageDimensions(base64Img);
+      let w = boxW, h = boxH;
+      if (dim && dim.width && dim.height) {
+        let ratio = dim.width / dim.height;
+        w = boxW; h = w / ratio;
+        if (h > boxH) { h = boxH; w = h * ratio; }
+      }
 
       try {
         let format = base64Img.includes("image/png") ? "PNG" : "JPEG";
         doc.addImage(base64Img, format, xBase, y + 3, w, h);
       } catch (err) {
         console.warn("Gagal merender gambar ke PDF:", err);
+        doc.setDrawColor(200, 200, 200);
+        doc.rect(xBase, y + 3, boxW, boxH);
+        doc.setFontSize(8); doc.setFont(undefined, 'italic');
+        doc.text("Gagal Merender Gambar", xBase + 30, y + 42);
       }
     }
 
